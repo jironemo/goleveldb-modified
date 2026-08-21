@@ -98,6 +98,16 @@ func newSession(stor storage.Storage, o *opt.Options) (s *session, err error) {
 
 // Close session.
 func (s *session) close() {
+	s.vmu.Lock()
+	select {
+	case <-s.closeC:
+		s.vmu.Unlock()
+		return
+	default:
+		close(s.closeC)
+	}
+	s.vmu.Unlock()
+
 	s.tops.close()
 	if s.manifest != nil {
 		s.manifest.Close()
@@ -109,8 +119,6 @@ func (s *session) close() {
 	s.manifestWriter = nil
 	s.setVersion(nil, &version{s: s, closing: true, id: s.ntVersionID})
 
-	// Close all background goroutines
-	close(s.closeC)
 	s.closeW.Wait()
 }
 

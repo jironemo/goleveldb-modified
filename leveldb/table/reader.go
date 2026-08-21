@@ -1137,3 +1137,117 @@ func NewReader(f io.ReaderAt, size int64, fd storage.FileDesc, cache *cache.Name
 
 	return r, nil
 }
+
+// EachRecord iterates through all records in the table, passing the internal key,
+// physical file offset of the value, and the length of the value to the callback.
+func (r *Reader) EachRecord(fn func(key []byte, valOffset uint64, valLen uint32) error) error {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
+	if r.err != nil {
+		return r.err
+	}
+
+	indexBlock, rel, err := r.getIndexBlock(true)
+	if err != nil {
+		return err
+	}
+	defer rel.Release()
+
+	index := r.newBlockIter(indexBlock, nil, nil, true)
+	defer index.Release()
+
+	for index.Next() {
+		dataBH, n := decodeBlockHandle(index.Value())
+		if n == 0 {
+			return fmt.Errorf("bad data block handle")
+		}
+
+		b, err := r.readBlock(dataBH, r.verifyChecksum)
+		if err != nil {
+			return err
+		}
+
+		offset := 0
+		var currentKey []byte
+		for offset < b.restartsOffset {
+			key, _, nShared, nEntry, err := b.entry(offset)
+			if err != nil {
+				b.Release()
+				return r.fixErrCorruptedBH(b.bh, err)
+			}
+			if nEntry == 0 {
+				break
+			}
+			currentKey = append(currentKey[:nShared], key...)
+
+			// Calculate the file offset of the value.
+			// The entry structure is:
+			// uvarint(nShared) -> n0 bytes
+			// uvarint(len(key)-nShared) -> n1 bytes
+			// uvarint(len(value)) -> n2 bytes
+			// key[nShared:] -> len(key)-nShared bytes
+			// value -> len(value) bytes
+			_, n0 := binary.Uvarint(b.data[offset:])       // Shared prefix length
+			v1, n1 := binary.Uvarint(b.data[offset+n0:])    // Key length
+			v2, n2 := binary.Uvarint(b.data[offset+n0+n1:]) // Value length
+			m := n0 + n1 + n2
+			valueOffsetInBlock := offset + m + int(v1)
+
+			valOffset := dataBH.offset + uint64(valueOffsetInBlock)
+			valLen := uint32(v2)
+
+			// We must copy currentKey since it is mutated in the loop.
+			keyCopy := make([]byte, len(currentKey))
+			copy(keyCopy, currentKey)
+
+			if err := fn(keyCopy, valOffset, valLen); err != nil {
+				b.Release()
+				return err
+			}
+
+			offset += nEntry
+		}
+		b.Release()
+	}
+	return nil
+}
+
+// ContainsKey checks if the user key is present in ANY of the sub-filters of the table.
+func (r *Reader) ContainsKey(key []byte) bool {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+	if r.err != nil || r.filter == nil {
+		return false
+	}
+	filterBlock, frel, ferr := r.getFilterBlock(true)
+	if ferr != nil {
+		return false
+	}
+	defer frel.Release()
+
+	// Append 8 dummy bytes to key because r.filter is an iFilter wrapper
+	// which treats the key as an internal key and strips the last 8 bytes.
+	ikey := make([]byte, len(key)+8)
+	copy(ikey, key)
+
+	for i := 0; i < filterBlock.filtersNum; i++ {
+		o := filterBlock.data[filterBlock.oOffset+i*4:]
+		n := int(binary.LittleEndian.Uint32(o))
+		m := int(binary.LittleEndian.Uint32(o[4:]))
+		if n < m && m <= filterBlock.oOffset {
+			if r.filter.Contains(filterBlock.data[n:m], ikey) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+// ReadRaw performs a direct random disk read of size length at offset using the cached file reader.
+func (r *Reader) ReadRaw(offset uint64, length uint32) ([]byte, error) {
+	buf := make([]byte, length)
+	_, err := r.reader.ReadAt(buf, int64(offset))
+	return buf, err
+}
+

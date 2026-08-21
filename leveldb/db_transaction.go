@@ -212,8 +212,10 @@ func (tr *Transaction) Commit() error {
 		tr.stats.startTimer()
 		var cerr error
 		for retry := 0; retry < 3; retry++ {
+			tr.db.btreesMu.Lock()
 			cerr = tr.db.s.commit(&tr.rec, false)
 			if cerr != nil {
+				tr.db.btreesMu.Unlock()
 				tr.db.logf("transaction@commit error R·%d %q", retry, cerr)
 				select {
 				case <-time.After(time.Second):
@@ -225,6 +227,8 @@ func (tr *Transaction) Commit() error {
 			} else {
 				// Success. Set db.seq.
 				tr.db.setSeq(tr.seq)
+				tr.db.rebuildBTreeForLevelLocked(0)
+				tr.db.btreesMu.Unlock()
 				break
 			}
 		}

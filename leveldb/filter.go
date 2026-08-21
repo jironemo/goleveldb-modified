@@ -8,6 +8,7 @@ package leveldb
 
 import (
 	"github.com/syndtr/goleveldb/leveldb/filter"
+	"github.com/syndtr/goleveldb/leveldb/learned"
 )
 
 type iFilter struct {
@@ -15,7 +16,11 @@ type iFilter struct {
 }
 
 func (f iFilter) Contains(filter, key []byte) bool {
-	return f.Filter.Contains(filter, internalKey(key).ukey())
+	ukey := internalKey(key).ukey()
+	if learned.PredictExistence(ukey) >= learned.Tau {
+		return true
+	}
+	return f.Filter.Contains(filter, ukey)
 }
 
 func (f iFilter) NewGenerator() filter.FilterGenerator {
@@ -27,5 +32,8 @@ type iFilterGenerator struct {
 }
 
 func (g iFilterGenerator) Add(key []byte) {
-	g.FilterGenerator.Add(internalKey(key).ukey())
+	ukey := internalKey(key).ukey()
+	if learned.PredictExistence(ukey) < learned.Tau {
+		g.FilterGenerator.Add(ukey)
+	}
 }

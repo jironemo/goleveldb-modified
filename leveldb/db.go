@@ -7,11 +7,13 @@
 package leveldb
 
 import (
+	"bytes"
 	"container/list"
 	"fmt"
 	"io"
 	"os"
 	"runtime"
+	"sort"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -19,8 +21,10 @@ import (
 
 	"github.com/syndtr/goleveldb/leveldb/cache"
 	"github.com/syndtr/goleveldb/leveldb/errors"
+	"github.com/syndtr/goleveldb/leveldb/hbtree"
 	"github.com/syndtr/goleveldb/leveldb/iterator"
 	"github.com/syndtr/goleveldb/leveldb/journal"
+	"github.com/syndtr/goleveldb/leveldb/learned"
 	"github.com/syndtr/goleveldb/leveldb/memdb"
 	"github.com/syndtr/goleveldb/leveldb/opt"
 	"github.com/syndtr/goleveldb/leveldb/storage"
@@ -89,11 +93,19 @@ type DB struct {
 	closeC chan struct{}
 	closed uint32
 	closer io.Closer
+
+	// B-trees for hybrid relational engine
+	btrees   []*hbtree.BTree
+	btreesMu sync.RWMutex
+
+	// Track corrupted files to bypass B-tree lookup on query.
+	corruptedFiles map[int64]error
 }
 
 func openDB(s *session) (*DB, error) {
 	s.log("db@open opening")
 	start := time.Now()
+
 	db := &DB{
 		s: s,
 		// Initial sequence
@@ -116,7 +128,8 @@ func openDB(s *session) (*DB, error) {
 		compPerErrC: make(chan error),
 		compErrSetC: make(chan error),
 		// Close
-		closeC: make(chan struct{}),
+		closeC:         make(chan struct{}),
+		corruptedFiles: make(map[int64]error),
 	}
 
 	// Read-only mode.
@@ -144,6 +157,16 @@ func openDB(s *session) (*DB, error) {
 		}
 	}
 
+	// Initialize B-trees after journal recovery.
+	v := s.version()
+	nLevels := len(v.levels)
+	v.release()
+
+	db.btrees = make([]*hbtree.BTree, nLevels)
+	for i := range db.btrees {
+		db.btrees[i] = hbtree.NewBTree(16, db.s.icmp.ucmp)
+	}
+
 	// Doesn't need to be included in the wait group.
 	go db.compactionError()
 	go db.mpoolDrain()
@@ -157,6 +180,16 @@ func openDB(s *session) (*DB, error) {
 		go db.tCompaction()
 		go db.mCompaction()
 		// go db.jWriter()
+	}
+
+
+
+	// Cold start scan: build B-trees for all levels.
+	for i := 0; i < len(db.btrees); i++ {
+		if err := db.rebuildBTreeForLevel(i); err != nil {
+			_ = db.Close()
+			return nil, err
+		}
 	}
 
 	s.logf("db@open done T·%v", time.Since(start))
@@ -177,6 +210,11 @@ func openDB(s *session) (*DB, error) {
 // The returned DB instance is safe for concurrent use.
 // The DB must be closed after use, by calling Close method.
 func Open(stor storage.Storage, o *opt.Options) (db *DB, err error) {
+	if o == nil {
+		o = &opt.Options{}
+	}
+	o.Compression = opt.NoCompression
+
 	s, err := newSession(stor, o)
 	if err != nil {
 		return
@@ -799,14 +837,95 @@ func (db *DB) get(auxm *memdb.DB, auxt tFiles, key []byte, seq uint64, ro *opt.R
 		}
 	}
 
-	v := db.s.version()
-	value, cSched, err := v.get(auxt, ikey, ro, false)
-	v.release()
-	if cSched {
-		// Trigger table compaction.
-		db.compTrigger(db.tcompCmdC)
+	// Fall back to standard read path if this is a snapshot read
+	if seq < db.getSeq() {
+		v := db.s.version()
+		var cSched bool
+		value, cSched, err = v.get(nil, ikey, ro, false)
+		v.release()
+		if cSched {
+			db.compTrigger(db.tcompCmdC)
+		}
+		return
 	}
-	return
+
+	// Staging/transaction table fallback
+	if len(auxt) > 0 {
+		v := db.s.version()
+		var cSched bool
+		value, cSched, err = v.get(auxt, ikey, ro, false)
+		v.release()
+		if cSched {
+			db.compTrigger(db.tcompCmdC)
+		}
+		return
+	}
+
+	// Fall back to standard read path if querying a key that overlaps with a corrupted file.
+	hasCorrupted := false
+	v := db.s.version()
+	for _, files := range v.levels {
+		for _, f := range files {
+			if _, ok := db.corruptedFiles[f.fd.Num]; ok {
+				if db.s.icmp.uCompare(key, f.imin.ukey()) >= 0 && db.s.icmp.uCompare(key, f.imax.ukey()) <= 0 {
+					hasCorrupted = true
+					break
+				}
+			}
+		}
+		if hasCorrupted {
+			break
+		}
+	}
+	v.release()
+
+	if hasCorrupted {
+		v := db.s.version()
+		var cSched bool
+		value, cSched, err = v.get(nil, ikey, ro, false)
+		v.release()
+		if cSched {
+			db.compTrigger(db.tcompCmdC)
+		}
+		return
+	}
+
+	// Disk Tier Access - Seek Compaction Sampling!
+	if !db.s.o.GetDisableSeeksCompaction() {
+		v := db.s.version()
+		if v.sampleSeek(ikey) {
+			db.compTrigger(db.tcompCmdC)
+		}
+		v.release()
+	}
+
+	// Disk Tier Access - Rerouted Read Path!
+	if !db.checkExistenceInSSTables(key) {
+		return nil, ErrNotFound
+	}
+
+	db.btreesMu.RLock()
+	defer db.btreesMu.RUnlock()
+
+	for level := 0; level < len(db.btrees); level++ {
+		btree := db.btrees[level]
+		if btree == nil {
+			continue
+		}
+		payload, found := btree.Search(key)
+		if found {
+			if payload.Type == uint8(keyTypeDel) {
+				return nil, ErrNotFound
+			}
+			val, err := db.readDirect(payload.FileID, payload.Offset, payload.Length)
+			if err == nil {
+				return val, nil
+			}
+			return nil, err
+		}
+	}
+
+	return nil, ErrNotFound
 }
 
 func nilIfNotFound(err error) error {
@@ -837,19 +956,62 @@ func (db *DB) has(auxm *memdb.DB, auxt tFiles, key []byte, seq uint64, ro *opt.R
 		}
 	}
 
-	v := db.s.version()
-	_, cSched, err := v.get(auxt, ikey, ro, true)
-	v.release()
-	if cSched {
-		// Trigger table compaction.
-		db.compTrigger(db.tcompCmdC)
+	// Fall back to standard read path if this is a snapshot read
+	if seq < db.getSeq() {
+		v := db.s.version()
+		var cSched bool
+		_, cSched, err = v.get(nil, ikey, ro, true)
+		v.release()
+		if cSched {
+			db.compTrigger(db.tcompCmdC)
+		}
+		if err == nil {
+			ret = true
+		} else if err == ErrNotFound {
+			err = nil
+		}
+		return
 	}
-	if err == nil {
-		ret = true
-	} else if err == ErrNotFound {
-		err = nil
+
+	// Staging/transaction table fallback
+	if len(auxt) > 0 {
+		v := db.s.version()
+		var cSched bool
+		_, cSched, err = v.get(auxt, ikey, ro, true)
+		v.release()
+		if cSched {
+			db.compTrigger(db.tcompCmdC)
+		}
+		if err == nil {
+			ret = true
+		} else if err == ErrNotFound {
+			err = nil
+		}
+		return
 	}
-	return
+
+	if !db.checkExistenceInSSTables(key) {
+		return false, nil
+	}
+
+	db.btreesMu.RLock()
+	defer db.btreesMu.RUnlock()
+
+	for level := 0; level < len(db.btrees); level++ {
+		btree := db.btrees[level]
+		if btree == nil {
+			continue
+		}
+		payload, found := btree.Search(key)
+		if found {
+			if payload.Type == uint8(keyTypeDel) {
+				return false, nil
+			}
+			return true, nil
+		}
+	}
+
+	return false, nil
 }
 
 // Get gets the value for the given key. It returns ErrNotFound if the
@@ -1230,4 +1392,269 @@ func (db *DB) Close() error {
 	db.clearMems()
 
 	return err
+}
+
+// rebuildBTreeForLevel reconstructs the B-tree for the given disk level from active files.
+// Acquires the lock internally.
+func (db *DB) rebuildBTreeForLevel(level int) error {
+	db.btreesMu.Lock()
+	defer db.btreesMu.Unlock()
+	return db.rebuildBTreeForLevelLocked(level)
+}
+
+// rebuildBTreeForLevelLocked reconstructs the B-tree for the given disk level.
+// Assumes db.btreesMu is already held by the caller.
+func (db *DB) rebuildBTreeForLevelLocked(level int) error {
+	v := db.s.version()
+	defer v.release()
+
+	if level < 0 {
+		return nil
+	}
+
+	var tables tFiles
+	if level < len(v.levels) {
+		tables = v.levels[level]
+	}
+
+	newBTree := hbtree.NewBTree(16, db.s.icmp.ucmp)
+
+	for _, t := range tables {
+		ch, err := db.s.tops.open(t)
+		if err != nil {
+			db.corruptedFiles[t.fd.Num] = err
+			db.s.logf("rebuildBTreeForLevelLocked: skip failed table %d: %v", t.fd.Num, err)
+			continue
+		}
+		tr := ch.Value().(*table.Reader)
+		err = tr.EachRecord(func(key []byte, valOffset uint64, valLen uint32) error {
+			ukey, seq, kt, kerr := parseInternalKey(key)
+			if kerr != nil {
+				return kerr
+			}
+			newBTree.Insert(ukey, hbtree.BTreePayload{
+				FileID: t.fd.Num,
+				Offset: valOffset,
+				Length: valLen,
+				Seq:    seq,
+				Type:   uint8(kt),
+			})
+			return nil
+		})
+		ch.Release()
+		if err != nil {
+			db.corruptedFiles[t.fd.Num] = err
+			db.s.logf("rebuildBTreeForLevelLocked: skip failed table %d: %v", t.fd.Num, err)
+			continue
+		}
+	}
+
+	if level >= len(db.btrees) {
+		newBtrees := make([]*hbtree.BTree, level+1)
+		copy(newBtrees, db.btrees)
+		for i := len(db.btrees); i <= level; i++ {
+			newBtrees[i] = hbtree.NewBTree(16, db.s.icmp.ucmp)
+		}
+		db.btrees = newBtrees
+	}
+	db.btrees[level] = newBTree
+	return nil
+}
+
+// findTFile finds the active tFile in the current version by its file ID (file number).
+func (db *DB) findTFile(fileID int64) (*tFile, int, bool) {
+	v := db.s.version()
+	defer v.release()
+	for level, files := range v.levels {
+		for _, f := range files {
+			if f.fd.Num == fileID {
+				return f, level, true
+			}
+		}
+	}
+	return nil, -1, false
+}
+
+// readDirect reads the value raw bytes from disk using table cache reader.
+func (db *DB) readDirect(fileID int64, offset uint64, length uint32) ([]byte, error) {
+	f, _, ok := db.findTFile(fileID)
+	if !ok {
+		return nil, ErrNotFound
+	}
+
+	ch, err := db.s.tops.open(f)
+	if err != nil {
+		return nil, err
+	}
+	defer ch.Release()
+
+	tr := ch.Value().(*table.Reader)
+	return tr.ReadRaw(offset, length)
+}
+
+// checkExistenceInSSTables implements the AI Shield.
+// Evaluates the learned existence index first. If negative, falls back to active SSTable Overflow Bloom filters.
+func (db *DB) checkExistenceInSSTables(ukey []byte) bool {
+	if db.s.o.GetFilter() == nil {
+		return true
+	}
+
+	prob := learned.PredictExistence(ukey)
+	if prob >= learned.Tau {
+		return true
+	}
+
+	// Model predicted < Tau. Check Overflow Bloom filters of overlapping SSTables.
+	v := db.s.version()
+	defer v.release()
+
+	ikey := makeInternalKey(nil, ukey, keyMaxSeq, keyTypeSeek)
+	found := false
+	v.walkOverlapping(nil, ikey, func(level int, t *tFile) bool {
+		ch, err := db.s.tops.open(t)
+		if err != nil {
+			found = true // assume found to be safe on error
+			return false
+		}
+		defer ch.Release()
+		tr := ch.Value().(*table.Reader)
+		if tr.ContainsKey(ukey) {
+			found = true
+			return false // stop walking
+		}
+		return true // continue
+	}, nil)
+
+	return found
+}
+
+// NumEntries returns the total number of active entries indexed by level-specific B-trees.
+func (db *DB) NumEntries() int {
+	db.btreesMu.RLock()
+	defer db.btreesMu.RUnlock()
+
+	count := 0
+	for _, btree := range db.btrees {
+		if btree != nil {
+			// Iterate through all leaf nodes to count keys
+			node := btree.FirstLeaf()
+			for node != nil {
+				count += len(node.Keys)
+				node = node.Next
+			}
+		}
+	}
+	return count
+}
+
+// RangeQuery performs a range query on user keys (inclusive) bypassing standard iterators.
+func (db *DB) RangeQuery(startKey, limitKey []byte) (keys [][]byte, values [][]byte, err error) {
+	type mergedValue struct {
+		val []byte
+		seq uint64
+		kt  keyType
+	}
+	merged := make(map[string]mergedValue)
+
+	// 1. Scan level-specific B-trees
+	db.btreesMu.RLock()
+	for _, btree := range db.btrees {
+		if btree == nil {
+			continue
+		}
+		results := btree.RangeSearch(startKey, limitKey)
+		for _, res := range results {
+			keyStr := string(res.Key)
+			if existing, ok := merged[keyStr]; !ok || res.Payload.Seq > existing.seq {
+				if res.Payload.Type == uint8(keyTypeDel) {
+					merged[keyStr] = mergedValue{
+						val: nil,
+						seq: res.Payload.Seq,
+						kt:  keyTypeDel,
+					}
+				} else {
+					val, err := db.readDirect(res.Payload.FileID, res.Payload.Offset, res.Payload.Length)
+					if err == nil {
+						merged[keyStr] = mergedValue{
+							val: val,
+							seq: res.Payload.Seq,
+							kt:  keyTypeVal,
+						}
+					}
+				}
+			}
+		}
+	}
+	db.btreesMu.RUnlock()
+
+	// 2. Scan active and frozen MemTables
+	em, fm := db.getMems()
+	for _, m := range [...]*memDB{em, fm} {
+		if m == nil {
+			continue
+		}
+		defer m.decref()
+
+		iter := m.DB.NewIterator(nil)
+		defer iter.Release()
+
+		var startIkey internalKey
+		var hasKeys bool
+		if startKey != nil {
+			startIkey = makeInternalKey(nil, startKey, keyMaxSeq, keyTypeSeek)
+			hasKeys = iter.Seek(startIkey)
+		} else {
+			hasKeys = iter.First()
+		}
+
+		for ok := hasKeys; ok; ok = iter.Next() {
+			ukey, seq, kt, kerr := parseInternalKey(iter.Key())
+			if kerr != nil {
+				continue
+			}
+			if startKey != nil && bytes.Compare(ukey, startKey) < 0 {
+				continue
+			}
+			if limitKey != nil && bytes.Compare(ukey, limitKey) > 0 {
+				break
+			}
+
+			keyStr := string(ukey)
+			if existing, ok := merged[keyStr]; !ok || seq > existing.seq {
+				merged[keyStr] = mergedValue{
+					val: append([]byte(nil), iter.Value()...),
+					seq: seq,
+					kt:  kt,
+				}
+			}
+		}
+	}
+
+	// 3. Collect non-deleted results and sort by user key.
+	type sortedResult struct {
+		key []byte
+		val []byte
+	}
+	var sorted []sortedResult
+	for kStr, mv := range merged {
+		if mv.kt == keyTypeVal {
+			sorted = append(sorted, sortedResult{
+				key: []byte(kStr),
+				val: mv.val,
+			})
+		}
+	}
+
+	sort.Slice(sorted, func(i, j int) bool {
+		return bytes.Compare(sorted[i].key, sorted[j].key) < 0
+	})
+
+	keys = make([][]byte, len(sorted))
+	values = make([][]byte, len(sorted))
+	for i, item := range sorted {
+		keys[i] = item.key
+		values[i] = item.val
+	}
+
+	return keys, values, nil
 }

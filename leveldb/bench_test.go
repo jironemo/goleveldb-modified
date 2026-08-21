@@ -219,7 +219,32 @@ func (p *dbBench) gets() {
 	for i := range p.keys {
 		_, err := db.Get(p.keys[i], p.ro)
 		if err != nil {
-			b.Error("got error: ", err)
+			em, fm := db.getMems()
+			emLen, fmLen := 0, 0
+			if em != nil {
+				emLen = em.Len()
+				em.decref()
+			}
+			if fm != nil {
+				fmLen = fm.Len()
+				fm.decref()
+			}
+			
+			db.btreesMu.RLock()
+			nBtrees := len(db.btrees)
+			bTreeFound := false
+			for lvl, btree := range db.btrees {
+				if btree != nil {
+					if _, ok := btree.Search(p.keys[i]); ok {
+						bTreeFound = true
+						b.Logf("Key %s found in B-tree at level %d", string(p.keys[i]), lvl)
+					}
+				}
+			}
+			db.btreesMu.RUnlock()
+
+			b.Fatalf("got error for key %s: %v. MemTable len: %d, FrozenMem len: %d, Num B-trees: %d, Found in B-tree: %t", 
+				string(p.keys[i]), err, emLen, fmLen, nBtrees, bTreeFound)
 		}
 	}
 	b.StopTimer()
