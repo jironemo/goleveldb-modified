@@ -1,0 +1,1938 @@
+{
+  "timestamp": "2026-09-09T16:27:04+06:30",
+  "platform": "Apple Silicon (M-Series, 10-Core)",
+  "record_count": 1000000,
+  "operation_count": 100000,
+  "thread_count": 8,
+  "total_runs": 1,
+  "filter_stats": {
+    "total_keys": 1000000,
+    "mlp_fast_path_keys": 999816,
+    "overflow_bloom_keys": 184,
+    "fast_path_pct": 99.9816,
+    "overflow_pct": 0.0184,
+    "standard_bloom_bytes": 1250001,
+    "overflow_bloom_bytes": 231,
+    "space_saved_pct": 99.98152001478398
+  },
+  "summary": [
+    {
+      "workload": "A",
+      "description": "50% Read, 50% Update (Session store)",
+      "distribution": "zipfian",
+      "engines": {
+        "bbolt": {
+          "engine": "bbolt",
+          "mean_qps": 60221.67902361421,
+          "stddev_qps": 0,
+          "min_qps": 60221.67902361421,
+          "max_qps": 60221.67902361421,
+          "mean_elapsed_ms": 1660.531583,
+          "individual_qps": [
+            60221.67902361421
+          ],
+          "op_latencies": {
+            "READ": {
+              "count": 49809,
+              "errors": 0,
+              "min_us": 0.583,
+              "avg_us": 1.734,
+              "p50_us": 1.292,
+              "p90_us": 2.791,
+              "p95_us": 3.125,
+              "p99_us": 5.375,
+              "p999_us": 44.5,
+              "max_us": 143.958
+            },
+            "UPDATE": {
+              "count": 50191,
+              "errors": 0,
+              "min_us": 20,
+              "avg_us": 262.056,
+              "p50_us": 27.416,
+              "p90_us": 1061.958,
+              "p95_us": 1073.333,
+              "p99_us": 1142.125,
+              "p999_us": 1300.083,
+              "max_us": 148163.292
+            }
+          }
+        },
+        "modified": {
+          "engine": "modified",
+          "mean_qps": 389971.81092664436,
+          "stddev_qps": 0,
+          "min_qps": 389971.81092664436,
+          "max_qps": 389971.81092664436,
+          "mean_elapsed_ms": 256.428791,
+          "individual_qps": [
+            389971.81092664436
+          ],
+          "op_latencies": {
+            "READ": {
+              "count": 49913,
+              "errors": 19139,
+              "min_us": 0.291,
+              "avg_us": 3.313,
+              "p50_us": 1.334,
+              "p90_us": 8.084,
+              "p95_us": 13.458,
+              "p99_us": 26.834,
+              "p999_us": 51.375,
+              "max_us": 141.25
+            },
+            "UPDATE": {
+              "count": 50087,
+              "errors": 0,
+              "min_us": 2.625,
+              "avg_us": 36.07,
+              "p50_us": 31.375,
+              "p90_us": 52.958,
+              "p95_us": 61.333,
+              "p99_us": 84.667,
+              "p999_us": 925.958,
+              "max_us": 5015.291
+            }
+          }
+        },
+        "original": {
+          "engine": "original",
+          "mean_qps": 446839.9214882597,
+          "stddev_qps": 0,
+          "min_qps": 446839.9214882597,
+          "max_qps": 446839.9214882597,
+          "mean_elapsed_ms": 223.793791,
+          "individual_qps": [
+            446839.9214882597
+          ],
+          "op_latencies": {
+            "READ": {
+              "count": 50022,
+              "errors": 20194,
+              "min_us": 0.333,
+              "avg_us": 3.25,
+              "p50_us": 1.417,
+              "p90_us": 8.208,
+              "p95_us": 12.792,
+              "p99_us": 25.209,
+              "p999_us": 48.375,
+              "max_us": 137.334
+            },
+            "UPDATE": {
+              "count": 49978,
+              "errors": 0,
+              "min_us": 2.458,
+              "avg_us": 30.74,
+              "p50_us": 26.917,
+              "p90_us": 45.125,
+              "p95_us": 52.708,
+              "p99_us": 78.333,
+              "p999_us": 347.292,
+              "max_us": 8713.5
+            }
+          }
+        }
+      }
+    },
+    {
+      "workload": "B",
+      "description": "95% Read, 5% Update (Photo tagging / WORE)",
+      "distribution": "zipfian",
+      "engines": {
+        "bbolt": {
+          "engine": "bbolt",
+          "mean_qps": 293660.5298957432,
+          "stddev_qps": 0,
+          "min_qps": 293660.5298957432,
+          "max_qps": 293660.5298957432,
+          "mean_elapsed_ms": 340.52925,
+          "individual_qps": [
+            293660.5298957432
+          ],
+          "op_latencies": {
+            "READ": {
+              "count": 94910,
+              "errors": 0,
+              "min_us": 0.958,
+              "avg_us": 3.759,
+              "p50_us": 1.959,
+              "p90_us": 4.666,
+              "p95_us": 13.875,
+              "p99_us": 32.792,
+              "p999_us": 112.875,
+              "max_us": 523.208
+            },
+            "UPDATE": {
+              "count": 5090,
+              "errors": 0,
+              "min_us": 35.25,
+              "avg_us": 456.611,
+              "p50_us": 524.417,
+              "p90_us": 813.25,
+              "p95_us": 916.125,
+              "p99_us": 1141.5,
+              "p999_us": 8347.875,
+              "max_us": 8501.5
+            }
+          }
+        },
+        "modified": {
+          "engine": "modified",
+          "mean_qps": 132133.2114184236,
+          "stddev_qps": 0,
+          "min_qps": 132133.2114184236,
+          "max_qps": 132133.2114184236,
+          "mean_elapsed_ms": 756.812,
+          "individual_qps": [
+            132133.2114184236
+          ],
+          "op_latencies": {
+            "READ": {
+              "count": 95042,
+              "errors": 51603,
+              "min_us": 0.292,
+              "avg_us": 3.059,
+              "p50_us": 1.417,
+              "p90_us": 7,
+              "p95_us": 9.292,
+              "p99_us": 26.041,
+              "p999_us": 60.917,
+              "max_us": 2031.375
+            },
+            "UPDATE": {
+              "count": 4958,
+              "errors": 0,
+              "min_us": 111,
+              "avg_us": 1141.858,
+              "p50_us": 1117.833,
+              "p90_us": 1179.958,
+              "p95_us": 1197.833,
+              "p99_us": 3312.792,
+              "p999_us": 3923.875,
+              "max_us": 3956.375
+            }
+          }
+        },
+        "original": {
+          "engine": "original",
+          "mean_qps": 130387.97757652756,
+          "stddev_qps": 0,
+          "min_qps": 130387.97757652756,
+          "max_qps": 130387.97757652756,
+          "mean_elapsed_ms": 766.941875,
+          "individual_qps": [
+            130387.97757652756
+          ],
+          "op_latencies": {
+            "READ": {
+              "count": 95013,
+              "errors": 51507,
+              "min_us": 0.375,
+              "avg_us": 3.411,
+              "p50_us": 1.75,
+              "p90_us": 7.041,
+              "p95_us": 10.792,
+              "p99_us": 30.25,
+              "p999_us": 74.042,
+              "max_us": 216.75
+            },
+            "UPDATE": {
+              "count": 4987,
+              "errors": 0,
+              "min_us": 387.958,
+              "avg_us": 1144.849,
+              "p50_us": 1108.416,
+              "p90_us": 1175.916,
+              "p95_us": 1197.458,
+              "p99_us": 3819.375,
+              "p999_us": 4181,
+              "max_us": 4233.416
+            }
+          }
+        }
+      }
+    },
+    {
+      "workload": "C",
+      "description": "100% Read-Only (User authentication)",
+      "distribution": "zipfian",
+      "engines": {
+        "bbolt": {
+          "engine": "bbolt",
+          "mean_qps": 589019.0636726781,
+          "stddev_qps": 0,
+          "min_qps": 589019.0636726781,
+          "max_qps": 589019.0636726781,
+          "mean_elapsed_ms": 169.773792,
+          "individual_qps": [
+            589019.0636726781
+          ],
+          "op_latencies": {
+            "READ": {
+              "count": 100000,
+              "errors": 0,
+              "min_us": 0.875,
+              "avg_us": 12.252,
+              "p50_us": 4.334,
+              "p90_us": 31.625,
+              "p95_us": 48,
+              "p99_us": 97.958,
+              "p999_us": 235.334,
+              "max_us": 508.792
+            }
+          }
+        },
+        "modified": {
+          "engine": "modified",
+          "mean_qps": 1161758.961155137,
+          "stddev_qps": 0,
+          "min_qps": 1161758.961155137,
+          "max_qps": 1161758.961155137,
+          "mean_elapsed_ms": 86.076375,
+          "individual_qps": [
+            1161758.961155137
+          ],
+          "op_latencies": {
+            "READ": {
+              "count": 100000,
+              "errors": 94912,
+              "min_us": 3.542,
+              "avg_us": 12.194,
+              "p50_us": 9.125,
+              "p90_us": 18.375,
+              "p95_us": 25.291,
+              "p99_us": 47.292,
+              "p999_us": 107.458,
+              "max_us": 2230.375
+            }
+          }
+        },
+        "original": {
+          "engine": "original",
+          "mean_qps": 891385.0999525266,
+          "stddev_qps": 0,
+          "min_qps": 891385.0999525266,
+          "max_qps": 891385.0999525266,
+          "mean_elapsed_ms": 112.184958,
+          "individual_qps": [
+            891385.0999525266
+          ],
+          "op_latencies": {
+            "READ": {
+              "count": 100000,
+              "errors": 95113,
+              "min_us": 3.209,
+              "avg_us": 13.213,
+              "p50_us": 9.625,
+              "p90_us": 23.042,
+              "p95_us": 34.333,
+              "p99_us": 65.75,
+              "p999_us": 122.5,
+              "max_us": 265.458
+            }
+          }
+        }
+      }
+    },
+    {
+      "workload": "D",
+      "description": "95% Read, 5% Insert (Latest activity)",
+      "distribution": "latest",
+      "engines": {
+        "bbolt": {
+          "engine": "bbolt",
+          "mean_qps": 535.7946665151743,
+          "stddev_qps": 0,
+          "min_qps": 535.7946665151743,
+          "max_qps": 535.7946665151743,
+          "mean_elapsed_ms": 186638.662625,
+          "individual_qps": [
+            535.7946665151743
+          ],
+          "op_latencies": {
+            "INSERT": {
+              "count": 5014,
+              "errors": 0,
+              "min_us": 43.708,
+              "avg_us": 164.702,
+              "p50_us": 123.5,
+              "p90_us": 175.583,
+              "p95_us": 241.416,
+              "p99_us": 1237.833,
+              "p999_us": 4498.5,
+              "max_us": 14621.25
+            },
+            "READ": {
+              "count": 94986,
+              "errors": 0,
+              "min_us": 1.167,
+              "avg_us": 6.585,
+              "p50_us": 4.5,
+              "p90_us": 12.083,
+              "p95_us": 15.875,
+              "p99_us": 24.958,
+              "p999_us": 135.625,
+              "max_us": 5114.667
+            }
+          }
+        },
+        "modified": {
+          "engine": "modified",
+          "mean_qps": 519.3446021662044,
+          "stddev_qps": 0,
+          "min_qps": 519.3446021662044,
+          "max_qps": 519.3446021662044,
+          "mean_elapsed_ms": 192550.379041,
+          "individual_qps": [
+            519.3446021662044
+          ],
+          "op_latencies": {
+            "INSERT": {
+              "count": 5080,
+              "errors": 0,
+              "min_us": 6.917,
+              "avg_us": 105.969,
+              "p50_us": 46.959,
+              "p90_us": 75.584,
+              "p95_us": 99.5,
+              "p99_us": 2285.542,
+              "p999_us": 6871.583,
+              "max_us": 11185.5
+            },
+            "READ": {
+              "count": 94920,
+              "errors": 21809,
+              "min_us": 0.791,
+              "avg_us": 10.251,
+              "p50_us": 5.75,
+              "p90_us": 19.458,
+              "p95_us": 30.5,
+              "p99_us": 48.333,
+              "p999_us": 100.083,
+              "max_us": 13795.5
+            }
+          }
+        },
+        "original": {
+          "engine": "original",
+          "mean_qps": 520.6533718898028,
+          "stddev_qps": 0,
+          "min_qps": 520.6533718898028,
+          "max_qps": 520.6533718898028,
+          "mean_elapsed_ms": 192066.363917,
+          "individual_qps": [
+            520.6533718898028
+          ],
+          "op_latencies": {
+            "INSERT": {
+              "count": 5037,
+              "errors": 0,
+              "min_us": 8.583,
+              "avg_us": 123.547,
+              "p50_us": 48.125,
+              "p90_us": 78.833,
+              "p95_us": 194.833,
+              "p99_us": 1980.625,
+              "p999_us": 5186.5,
+              "max_us": 10677.375
+            },
+            "READ": {
+              "count": 94963,
+              "errors": 21859,
+              "min_us": 0.875,
+              "avg_us": 10.433,
+              "p50_us": 6.042,
+              "p90_us": 20.417,
+              "p95_us": 31.042,
+              "p99_us": 50.625,
+              "p999_us": 115.208,
+              "max_us": 5933
+            }
+          }
+        }
+      }
+    },
+    {
+      "workload": "E",
+      "description": "95% Range Scan, 5% Insert (Time-series / Threads)",
+      "distribution": "zipfian",
+      "engines": {
+        "bbolt": {
+          "engine": "bbolt",
+          "mean_qps": 28476.286580511736,
+          "stddev_qps": 0,
+          "min_qps": 28476.286580511736,
+          "max_qps": 28476.286580511736,
+          "mean_elapsed_ms": 3511.693834,
+          "individual_qps": [
+            28476.286580511736
+          ],
+          "op_latencies": {
+            "INSERT": {
+              "count": 4999,
+              "errors": 0,
+              "min_us": 39.708,
+              "avg_us": 503.306,
+              "p50_us": 368.417,
+              "p90_us": 1071.666,
+              "p95_us": 1339.791,
+              "p99_us": 1930.459,
+              "p999_us": 9671.083,
+              "max_us": 10050.666
+            },
+            "SCAN": {
+              "count": 95001,
+              "errors": 0,
+              "min_us": 1.167,
+              "avg_us": 263.97,
+              "p50_us": 165.25,
+              "p90_us": 608.125,
+              "p95_us": 790.083,
+              "p99_us": 1256.875,
+              "p999_us": 1953,
+              "max_us": 20548.125
+            }
+          }
+        },
+        "modified": {
+          "engine": "modified",
+          "mean_qps": 27107.05266571497,
+          "stddev_qps": 0,
+          "min_qps": 27107.05266571497,
+          "max_qps": 27107.05266571497,
+          "mean_elapsed_ms": 3689.076833,
+          "individual_qps": [
+            27107.05266571497
+          ],
+          "op_latencies": {
+            "INSERT": {
+              "count": 4977,
+              "errors": 0,
+              "min_us": 31.417,
+              "avg_us": 1081.917,
+              "p50_us": 1062.708,
+              "p90_us": 1660.834,
+              "p95_us": 2236.125,
+              "p99_us": 4044.125,
+              "p999_us": 20671.417,
+              "max_us": 23343.083
+            },
+            "SCAN": {
+              "count": 95023,
+              "errors": 0,
+              "min_us": 8.333,
+              "avg_us": 251.999,
+              "p50_us": 165,
+              "p90_us": 417.25,
+              "p95_us": 687.5,
+              "p99_us": 1908.792,
+              "p999_us": 6084.833,
+              "max_us": 24051.333
+            }
+          }
+        },
+        "original": {
+          "engine": "original",
+          "mean_qps": 25415.545225536534,
+          "stddev_qps": 0,
+          "min_qps": 25415.545225536534,
+          "max_qps": 25415.545225536534,
+          "mean_elapsed_ms": 3934.599833,
+          "individual_qps": [
+            25415.545225536534
+          ],
+          "op_latencies": {
+            "INSERT": {
+              "count": 4910,
+              "errors": 0,
+              "min_us": 28.25,
+              "avg_us": 1164.27,
+              "p50_us": 1081.709,
+              "p90_us": 1988.958,
+              "p95_us": 2813.959,
+              "p99_us": 4390.083,
+              "p999_us": 7260.75,
+              "max_us": 13832.167
+            },
+            "SCAN": {
+              "count": 95090,
+              "errors": 0,
+              "min_us": 15.208,
+              "avg_us": 269.014,
+              "p50_us": 172.583,
+              "p90_us": 452.542,
+              "p95_us": 726.958,
+              "p99_us": 2045.083,
+              "p999_us": 6696.209,
+              "max_us": 36824.583
+            }
+          }
+        }
+      }
+    },
+    {
+      "workload": "F",
+      "description": "50% Read, 50% Read-Modify-Write (Bank transactions)",
+      "distribution": "zipfian",
+      "engines": {
+        "bbolt": {
+          "engine": "bbolt",
+          "mean_qps": 50594.42548100448,
+          "stddev_qps": 0,
+          "min_qps": 50594.42548100448,
+          "max_qps": 50594.42548100448,
+          "mean_elapsed_ms": 1976.502333,
+          "individual_qps": [
+            50594.42548100448
+          ],
+          "op_latencies": {
+            "READ": {
+              "count": 49913,
+              "errors": 0,
+              "min_us": 0.833,
+              "avg_us": 2.331,
+              "p50_us": 1.667,
+              "p90_us": 3.375,
+              "p95_us": 3.833,
+              "p99_us": 6.333,
+              "p999_us": 46.625,
+              "max_us": 1721.208
+            },
+            "RMW": {
+              "count": 50087,
+              "errors": 0,
+              "min_us": 29.25,
+              "avg_us": 312.486,
+              "p50_us": 37.542,
+              "p90_us": 1090.667,
+              "p95_us": 1104.459,
+              "p99_us": 1213.834,
+              "p999_us": 1331.166,
+              "max_us": 2822.333
+            }
+          }
+        },
+        "modified": {
+          "engine": "modified",
+          "mean_qps": 248619.51466134263,
+          "stddev_qps": 0,
+          "min_qps": 248619.51466134263,
+          "max_qps": 248619.51466134263,
+          "mean_elapsed_ms": 402.221041,
+          "individual_qps": [
+            248619.51466134263
+          ],
+          "op_latencies": {
+            "READ": {
+              "count": 50344,
+              "errors": 47767,
+              "min_us": 2,
+              "avg_us": 10.169,
+              "p50_us": 7.375,
+              "p90_us": 13.833,
+              "p95_us": 19.25,
+              "p99_us": 43.167,
+              "p999_us": 131.625,
+              "max_us": 2221.75
+            },
+            "RMW": {
+              "count": 49656,
+              "errors": 47146,
+              "min_us": 79.041,
+              "avg_us": 1117.945,
+              "p50_us": 1089.083,
+              "p90_us": 1199.042,
+              "p95_us": 1221.917,
+              "p99_us": 3793.125,
+              "p999_us": 4048.541,
+              "max_us": 4055.208
+            }
+          }
+        },
+        "original": {
+          "engine": "original",
+          "mean_qps": 253246.16698187668,
+          "stddev_qps": 0,
+          "min_qps": 253246.16698187668,
+          "max_qps": 253246.16698187668,
+          "mean_elapsed_ms": 394.872709,
+          "individual_qps": [
+            253246.16698187668
+          ],
+          "op_latencies": {
+            "READ": {
+              "count": 50017,
+              "errors": 47482,
+              "min_us": 2,
+              "avg_us": 9.94,
+              "p50_us": 7.791,
+              "p90_us": 14.916,
+              "p95_us": 21.583,
+              "p99_us": 48.542,
+              "p999_us": 86.958,
+              "max_us": 134.666
+            },
+            "RMW": {
+              "count": 49983,
+              "errors": 47523,
+              "min_us": 91.25,
+              "avg_us": 1081.674,
+              "p50_us": 1064,
+              "p90_us": 1202.458,
+              "p95_us": 1235.125,
+              "p99_us": 3644.875,
+              "p999_us": 4323.083,
+              "max_us": 4501.625
+            }
+          }
+        }
+      }
+    }
+  ],
+  "runs": [
+    {
+      "run_index": 1,
+      "timestamp": "2026-09-09T16:27:04+06:30",
+      "workloads": [
+        {
+          "workload": "A",
+          "description": "50% Read, 50% Update (Session store)",
+          "distribution": "zipfian",
+          "records": 1000000,
+          "operations": 100000,
+          "threads": 8,
+          "engines": {
+            "bbolt": {
+              "engine": "bbolt",
+              "qps": 60221.67902361421,
+              "elapsed_ms": 1660.531583,
+              "total_ops": 100000,
+              "total_errors": 0,
+              "op_latencies": {
+                "READ": {
+                  "count": 49809,
+                  "errors": 0,
+                  "min_us": 0.583,
+                  "avg_us": 1.734,
+                  "p50_us": 1.292,
+                  "p90_us": 2.791,
+                  "p95_us": 3.125,
+                  "p99_us": 5.375,
+                  "p999_us": 44.5,
+                  "max_us": 143.958
+                },
+                "UPDATE": {
+                  "count": 50191,
+                  "errors": 0,
+                  "min_us": 20,
+                  "avg_us": 262.056,
+                  "p50_us": 27.416,
+                  "p90_us": 1061.958,
+                  "p95_us": 1073.333,
+                  "p99_us": 1142.125,
+                  "p999_us": 1300.083,
+                  "max_us": 148163.292
+                }
+              }
+            },
+            "modified": {
+              "engine": "modified",
+              "qps": 389971.81092664436,
+              "elapsed_ms": 256.428791,
+              "total_ops": 100000,
+              "total_errors": 19139,
+              "op_latencies": {
+                "READ": {
+                  "count": 49913,
+                  "errors": 19139,
+                  "min_us": 0.291,
+                  "avg_us": 3.313,
+                  "p50_us": 1.334,
+                  "p90_us": 8.084,
+                  "p95_us": 13.458,
+                  "p99_us": 26.834,
+                  "p999_us": 51.375,
+                  "max_us": 141.25
+                },
+                "UPDATE": {
+                  "count": 50087,
+                  "errors": 0,
+                  "min_us": 2.625,
+                  "avg_us": 36.07,
+                  "p50_us": 31.375,
+                  "p90_us": 52.958,
+                  "p95_us": 61.333,
+                  "p99_us": 84.667,
+                  "p999_us": 925.958,
+                  "max_us": 5015.291
+                }
+              }
+            },
+            "original": {
+              "engine": "original",
+              "qps": 446839.9214882597,
+              "elapsed_ms": 223.793791,
+              "total_ops": 100000,
+              "total_errors": 20194,
+              "op_latencies": {
+                "READ": {
+                  "count": 50022,
+                  "errors": 20194,
+                  "min_us": 0.333,
+                  "avg_us": 3.25,
+                  "p50_us": 1.417,
+                  "p90_us": 8.208,
+                  "p95_us": 12.792,
+                  "p99_us": 25.209,
+                  "p999_us": 48.375,
+                  "max_us": 137.334
+                },
+                "UPDATE": {
+                  "count": 49978,
+                  "errors": 0,
+                  "min_us": 2.458,
+                  "avg_us": 30.74,
+                  "p50_us": 26.917,
+                  "p90_us": 45.125,
+                  "p95_us": 52.708,
+                  "p99_us": 78.333,
+                  "p999_us": 347.292,
+                  "max_us": 8713.5
+                }
+              }
+            }
+          }
+        },
+        {
+          "workload": "B",
+          "description": "95% Read, 5% Update (Photo tagging / WORE)",
+          "distribution": "zipfian",
+          "records": 1000000,
+          "operations": 100000,
+          "threads": 8,
+          "engines": {
+            "bbolt": {
+              "engine": "bbolt",
+              "qps": 293660.5298957432,
+              "elapsed_ms": 340.52925,
+              "total_ops": 100000,
+              "total_errors": 0,
+              "op_latencies": {
+                "READ": {
+                  "count": 94910,
+                  "errors": 0,
+                  "min_us": 0.958,
+                  "avg_us": 3.759,
+                  "p50_us": 1.959,
+                  "p90_us": 4.666,
+                  "p95_us": 13.875,
+                  "p99_us": 32.792,
+                  "p999_us": 112.875,
+                  "max_us": 523.208
+                },
+                "UPDATE": {
+                  "count": 5090,
+                  "errors": 0,
+                  "min_us": 35.25,
+                  "avg_us": 456.611,
+                  "p50_us": 524.417,
+                  "p90_us": 813.25,
+                  "p95_us": 916.125,
+                  "p99_us": 1141.5,
+                  "p999_us": 8347.875,
+                  "max_us": 8501.5
+                }
+              }
+            },
+            "modified": {
+              "engine": "modified",
+              "qps": 132133.2114184236,
+              "elapsed_ms": 756.812,
+              "total_ops": 100000,
+              "total_errors": 51603,
+              "op_latencies": {
+                "READ": {
+                  "count": 95042,
+                  "errors": 51603,
+                  "min_us": 0.292,
+                  "avg_us": 3.059,
+                  "p50_us": 1.417,
+                  "p90_us": 7,
+                  "p95_us": 9.292,
+                  "p99_us": 26.041,
+                  "p999_us": 60.917,
+                  "max_us": 2031.375
+                },
+                "UPDATE": {
+                  "count": 4958,
+                  "errors": 0,
+                  "min_us": 111,
+                  "avg_us": 1141.858,
+                  "p50_us": 1117.833,
+                  "p90_us": 1179.958,
+                  "p95_us": 1197.833,
+                  "p99_us": 3312.792,
+                  "p999_us": 3923.875,
+                  "max_us": 3956.375
+                }
+              }
+            },
+            "original": {
+              "engine": "original",
+              "qps": 130387.97757652756,
+              "elapsed_ms": 766.941875,
+              "total_ops": 100000,
+              "total_errors": 51507,
+              "op_latencies": {
+                "READ": {
+                  "count": 95013,
+                  "errors": 51507,
+                  "min_us": 0.375,
+                  "avg_us": 3.411,
+                  "p50_us": 1.75,
+                  "p90_us": 7.041,
+                  "p95_us": 10.792,
+                  "p99_us": 30.25,
+                  "p999_us": 74.042,
+                  "max_us": 216.75
+                },
+                "UPDATE": {
+                  "count": 4987,
+                  "errors": 0,
+                  "min_us": 387.958,
+                  "avg_us": 1144.849,
+                  "p50_us": 1108.416,
+                  "p90_us": 1175.916,
+                  "p95_us": 1197.458,
+                  "p99_us": 3819.375,
+                  "p999_us": 4181,
+                  "max_us": 4233.416
+                }
+              }
+            }
+          }
+        },
+        {
+          "workload": "C",
+          "description": "100% Read-Only (User authentication)",
+          "distribution": "zipfian",
+          "records": 1000000,
+          "operations": 100000,
+          "threads": 8,
+          "engines": {
+            "bbolt": {
+              "engine": "bbolt",
+              "qps": 589019.0636726781,
+              "elapsed_ms": 169.773792,
+              "total_ops": 100000,
+              "total_errors": 0,
+              "op_latencies": {
+                "READ": {
+                  "count": 100000,
+                  "errors": 0,
+                  "min_us": 0.875,
+                  "avg_us": 12.252,
+                  "p50_us": 4.334,
+                  "p90_us": 31.625,
+                  "p95_us": 48,
+                  "p99_us": 97.958,
+                  "p999_us": 235.334,
+                  "max_us": 508.792
+                }
+              }
+            },
+            "modified": {
+              "engine": "modified",
+              "qps": 1161758.961155137,
+              "elapsed_ms": 86.076375,
+              "total_ops": 100000,
+              "total_errors": 94912,
+              "op_latencies": {
+                "READ": {
+                  "count": 100000,
+                  "errors": 94912,
+                  "min_us": 3.542,
+                  "avg_us": 12.194,
+                  "p50_us": 9.125,
+                  "p90_us": 18.375,
+                  "p95_us": 25.291,
+                  "p99_us": 47.292,
+                  "p999_us": 107.458,
+                  "max_us": 2230.375
+                }
+              }
+            },
+            "original": {
+              "engine": "original",
+              "qps": 891385.0999525266,
+              "elapsed_ms": 112.184958,
+              "total_ops": 100000,
+              "total_errors": 95113,
+              "op_latencies": {
+                "READ": {
+                  "count": 100000,
+                  "errors": 95113,
+                  "min_us": 3.209,
+                  "avg_us": 13.213,
+                  "p50_us": 9.625,
+                  "p90_us": 23.042,
+                  "p95_us": 34.333,
+                  "p99_us": 65.75,
+                  "p999_us": 122.5,
+                  "max_us": 265.458
+                }
+              }
+            }
+          }
+        },
+        {
+          "workload": "D",
+          "description": "95% Read, 5% Insert (Latest activity)",
+          "distribution": "latest",
+          "records": 1000000,
+          "operations": 100000,
+          "threads": 8,
+          "engines": {
+            "bbolt": {
+              "engine": "bbolt",
+              "qps": 535.7946665151743,
+              "elapsed_ms": 186638.662625,
+              "total_ops": 100000,
+              "total_errors": 0,
+              "op_latencies": {
+                "INSERT": {
+                  "count": 5014,
+                  "errors": 0,
+                  "min_us": 43.708,
+                  "avg_us": 164.702,
+                  "p50_us": 123.5,
+                  "p90_us": 175.583,
+                  "p95_us": 241.416,
+                  "p99_us": 1237.833,
+                  "p999_us": 4498.5,
+                  "max_us": 14621.25
+                },
+                "READ": {
+                  "count": 94986,
+                  "errors": 0,
+                  "min_us": 1.167,
+                  "avg_us": 6.585,
+                  "p50_us": 4.5,
+                  "p90_us": 12.083,
+                  "p95_us": 15.875,
+                  "p99_us": 24.958,
+                  "p999_us": 135.625,
+                  "max_us": 5114.667
+                }
+              }
+            },
+            "modified": {
+              "engine": "modified",
+              "qps": 519.3446021662044,
+              "elapsed_ms": 192550.379041,
+              "total_ops": 100000,
+              "total_errors": 21809,
+              "op_latencies": {
+                "INSERT": {
+                  "count": 5080,
+                  "errors": 0,
+                  "min_us": 6.917,
+                  "avg_us": 105.969,
+                  "p50_us": 46.959,
+                  "p90_us": 75.584,
+                  "p95_us": 99.5,
+                  "p99_us": 2285.542,
+                  "p999_us": 6871.583,
+                  "max_us": 11185.5
+                },
+                "READ": {
+                  "count": 94920,
+                  "errors": 21809,
+                  "min_us": 0.791,
+                  "avg_us": 10.251,
+                  "p50_us": 5.75,
+                  "p90_us": 19.458,
+                  "p95_us": 30.5,
+                  "p99_us": 48.333,
+                  "p999_us": 100.083,
+                  "max_us": 13795.5
+                }
+              }
+            },
+            "original": {
+              "engine": "original",
+              "qps": 520.6533718898028,
+              "elapsed_ms": 192066.363917,
+              "total_ops": 100000,
+              "total_errors": 21859,
+              "op_latencies": {
+                "INSERT": {
+                  "count": 5037,
+                  "errors": 0,
+                  "min_us": 8.583,
+                  "avg_us": 123.547,
+                  "p50_us": 48.125,
+                  "p90_us": 78.833,
+                  "p95_us": 194.833,
+                  "p99_us": 1980.625,
+                  "p999_us": 5186.5,
+                  "max_us": 10677.375
+                },
+                "READ": {
+                  "count": 94963,
+                  "errors": 21859,
+                  "min_us": 0.875,
+                  "avg_us": 10.433,
+                  "p50_us": 6.042,
+                  "p90_us": 20.417,
+                  "p95_us": 31.042,
+                  "p99_us": 50.625,
+                  "p999_us": 115.208,
+                  "max_us": 5933
+                }
+              }
+            }
+          }
+        },
+        {
+          "workload": "E",
+          "description": "95% Range Scan, 5% Insert (Time-series / Threads)",
+          "distribution": "zipfian",
+          "records": 1000000,
+          "operations": 100000,
+          "threads": 8,
+          "engines": {
+            "bbolt": {
+              "engine": "bbolt",
+              "qps": 28476.286580511736,
+              "elapsed_ms": 3511.693834,
+              "total_ops": 100000,
+              "total_errors": 0,
+              "op_latencies": {
+                "INSERT": {
+                  "count": 4999,
+                  "errors": 0,
+                  "min_us": 39.708,
+                  "avg_us": 503.306,
+                  "p50_us": 368.417,
+                  "p90_us": 1071.666,
+                  "p95_us": 1339.791,
+                  "p99_us": 1930.459,
+                  "p999_us": 9671.083,
+                  "max_us": 10050.666
+                },
+                "SCAN": {
+                  "count": 95001,
+                  "errors": 0,
+                  "min_us": 1.167,
+                  "avg_us": 263.97,
+                  "p50_us": 165.25,
+                  "p90_us": 608.125,
+                  "p95_us": 790.083,
+                  "p99_us": 1256.875,
+                  "p999_us": 1953,
+                  "max_us": 20548.125
+                }
+              }
+            },
+            "modified": {
+              "engine": "modified",
+              "qps": 27107.05266571497,
+              "elapsed_ms": 3689.076833,
+              "total_ops": 100000,
+              "total_errors": 0,
+              "op_latencies": {
+                "INSERT": {
+                  "count": 4977,
+                  "errors": 0,
+                  "min_us": 31.417,
+                  "avg_us": 1081.917,
+                  "p50_us": 1062.708,
+                  "p90_us": 1660.834,
+                  "p95_us": 2236.125,
+                  "p99_us": 4044.125,
+                  "p999_us": 20671.417,
+                  "max_us": 23343.083
+                },
+                "SCAN": {
+                  "count": 95023,
+                  "errors": 0,
+                  "min_us": 8.333,
+                  "avg_us": 251.999,
+                  "p50_us": 165,
+                  "p90_us": 417.25,
+                  "p95_us": 687.5,
+                  "p99_us": 1908.792,
+                  "p999_us": 6084.833,
+                  "max_us": 24051.333
+                }
+              }
+            },
+            "original": {
+              "engine": "original",
+              "qps": 25415.545225536534,
+              "elapsed_ms": 3934.599833,
+              "total_ops": 100000,
+              "total_errors": 0,
+              "op_latencies": {
+                "INSERT": {
+                  "count": 4910,
+                  "errors": 0,
+                  "min_us": 28.25,
+                  "avg_us": 1164.27,
+                  "p50_us": 1081.709,
+                  "p90_us": 1988.958,
+                  "p95_us": 2813.959,
+                  "p99_us": 4390.083,
+                  "p999_us": 7260.75,
+                  "max_us": 13832.167
+                },
+                "SCAN": {
+                  "count": 95090,
+                  "errors": 0,
+                  "min_us": 15.208,
+                  "avg_us": 269.014,
+                  "p50_us": 172.583,
+                  "p90_us": 452.542,
+                  "p95_us": 726.958,
+                  "p99_us": 2045.083,
+                  "p999_us": 6696.209,
+                  "max_us": 36824.583
+                }
+              }
+            }
+          }
+        },
+        {
+          "workload": "F",
+          "description": "50% Read, 50% Read-Modify-Write (Bank transactions)",
+          "distribution": "zipfian",
+          "records": 1000000,
+          "operations": 100000,
+          "threads": 8,
+          "engines": {
+            "bbolt": {
+              "engine": "bbolt",
+              "qps": 50594.42548100448,
+              "elapsed_ms": 1976.502333,
+              "total_ops": 100000,
+              "total_errors": 0,
+              "op_latencies": {
+                "READ": {
+                  "count": 49913,
+                  "errors": 0,
+                  "min_us": 0.833,
+                  "avg_us": 2.331,
+                  "p50_us": 1.667,
+                  "p90_us": 3.375,
+                  "p95_us": 3.833,
+                  "p99_us": 6.333,
+                  "p999_us": 46.625,
+                  "max_us": 1721.208
+                },
+                "RMW": {
+                  "count": 50087,
+                  "errors": 0,
+                  "min_us": 29.25,
+                  "avg_us": 312.486,
+                  "p50_us": 37.542,
+                  "p90_us": 1090.667,
+                  "p95_us": 1104.459,
+                  "p99_us": 1213.834,
+                  "p999_us": 1331.166,
+                  "max_us": 2822.333
+                }
+              }
+            },
+            "modified": {
+              "engine": "modified",
+              "qps": 248619.51466134263,
+              "elapsed_ms": 402.221041,
+              "total_ops": 100000,
+              "total_errors": 94913,
+              "op_latencies": {
+                "READ": {
+                  "count": 50344,
+                  "errors": 47767,
+                  "min_us": 2,
+                  "avg_us": 10.169,
+                  "p50_us": 7.375,
+                  "p90_us": 13.833,
+                  "p95_us": 19.25,
+                  "p99_us": 43.167,
+                  "p999_us": 131.625,
+                  "max_us": 2221.75
+                },
+                "RMW": {
+                  "count": 49656,
+                  "errors": 47146,
+                  "min_us": 79.041,
+                  "avg_us": 1117.945,
+                  "p50_us": 1089.083,
+                  "p90_us": 1199.042,
+                  "p95_us": 1221.917,
+                  "p99_us": 3793.125,
+                  "p999_us": 4048.541,
+                  "max_us": 4055.208
+                }
+              }
+            },
+            "original": {
+              "engine": "original",
+              "qps": 253246.16698187668,
+              "elapsed_ms": 394.872709,
+              "total_ops": 100000,
+              "total_errors": 95005,
+              "op_latencies": {
+                "READ": {
+                  "count": 50017,
+                  "errors": 47482,
+                  "min_us": 2,
+                  "avg_us": 9.94,
+                  "p50_us": 7.791,
+                  "p90_us": 14.916,
+                  "p95_us": 21.583,
+                  "p99_us": 48.542,
+                  "p999_us": 86.958,
+                  "max_us": 134.666
+                },
+                "RMW": {
+                  "count": 49983,
+                  "errors": 47523,
+                  "min_us": 91.25,
+                  "avg_us": 1081.674,
+                  "p50_us": 1064,
+                  "p90_us": 1202.458,
+                  "p95_us": 1235.125,
+                  "p99_us": 3644.875,
+                  "p999_us": 4323.083,
+                  "max_us": 4501.625
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "workloads": [
+    {
+      "workload": "A",
+      "description": "50% Read, 50% Update (Session store)",
+      "distribution": "zipfian",
+      "records": 1000000,
+      "operations": 100000,
+      "threads": 8,
+      "engines": {
+        "bbolt": {
+          "engine": "bbolt",
+          "qps": 60221.67902361421,
+          "elapsed_ms": 1660.531583,
+          "total_ops": 100000,
+          "total_errors": 0,
+          "op_latencies": {
+            "READ": {
+              "count": 49809,
+              "errors": 0,
+              "min_us": 0.583,
+              "avg_us": 1.734,
+              "p50_us": 1.292,
+              "p90_us": 2.791,
+              "p95_us": 3.125,
+              "p99_us": 5.375,
+              "p999_us": 44.5,
+              "max_us": 143.958
+            },
+            "UPDATE": {
+              "count": 50191,
+              "errors": 0,
+              "min_us": 20,
+              "avg_us": 262.056,
+              "p50_us": 27.416,
+              "p90_us": 1061.958,
+              "p95_us": 1073.333,
+              "p99_us": 1142.125,
+              "p999_us": 1300.083,
+              "max_us": 148163.292
+            }
+          }
+        },
+        "modified": {
+          "engine": "modified",
+          "qps": 389971.81092664436,
+          "elapsed_ms": 256.428791,
+          "total_ops": 100000,
+          "total_errors": 0,
+          "op_latencies": {
+            "READ": {
+              "count": 49913,
+              "errors": 19139,
+              "min_us": 0.291,
+              "avg_us": 3.313,
+              "p50_us": 1.334,
+              "p90_us": 8.084,
+              "p95_us": 13.458,
+              "p99_us": 26.834,
+              "p999_us": 51.375,
+              "max_us": 141.25
+            },
+            "UPDATE": {
+              "count": 50087,
+              "errors": 0,
+              "min_us": 2.625,
+              "avg_us": 36.07,
+              "p50_us": 31.375,
+              "p90_us": 52.958,
+              "p95_us": 61.333,
+              "p99_us": 84.667,
+              "p999_us": 925.958,
+              "max_us": 5015.291
+            }
+          }
+        },
+        "original": {
+          "engine": "original",
+          "qps": 446839.9214882597,
+          "elapsed_ms": 223.793791,
+          "total_ops": 100000,
+          "total_errors": 0,
+          "op_latencies": {
+            "READ": {
+              "count": 50022,
+              "errors": 20194,
+              "min_us": 0.333,
+              "avg_us": 3.25,
+              "p50_us": 1.417,
+              "p90_us": 8.208,
+              "p95_us": 12.792,
+              "p99_us": 25.209,
+              "p999_us": 48.375,
+              "max_us": 137.334
+            },
+            "UPDATE": {
+              "count": 49978,
+              "errors": 0,
+              "min_us": 2.458,
+              "avg_us": 30.74,
+              "p50_us": 26.917,
+              "p90_us": 45.125,
+              "p95_us": 52.708,
+              "p99_us": 78.333,
+              "p999_us": 347.292,
+              "max_us": 8713.5
+            }
+          }
+        }
+      }
+    },
+    {
+      "workload": "B",
+      "description": "95% Read, 5% Update (Photo tagging / WORE)",
+      "distribution": "zipfian",
+      "records": 1000000,
+      "operations": 100000,
+      "threads": 8,
+      "engines": {
+        "bbolt": {
+          "engine": "bbolt",
+          "qps": 293660.5298957432,
+          "elapsed_ms": 340.52925,
+          "total_ops": 100000,
+          "total_errors": 0,
+          "op_latencies": {
+            "READ": {
+              "count": 94910,
+              "errors": 0,
+              "min_us": 0.958,
+              "avg_us": 3.759,
+              "p50_us": 1.959,
+              "p90_us": 4.666,
+              "p95_us": 13.875,
+              "p99_us": 32.792,
+              "p999_us": 112.875,
+              "max_us": 523.208
+            },
+            "UPDATE": {
+              "count": 5090,
+              "errors": 0,
+              "min_us": 35.25,
+              "avg_us": 456.611,
+              "p50_us": 524.417,
+              "p90_us": 813.25,
+              "p95_us": 916.125,
+              "p99_us": 1141.5,
+              "p999_us": 8347.875,
+              "max_us": 8501.5
+            }
+          }
+        },
+        "modified": {
+          "engine": "modified",
+          "qps": 132133.2114184236,
+          "elapsed_ms": 756.812,
+          "total_ops": 100000,
+          "total_errors": 0,
+          "op_latencies": {
+            "READ": {
+              "count": 95042,
+              "errors": 51603,
+              "min_us": 0.292,
+              "avg_us": 3.059,
+              "p50_us": 1.417,
+              "p90_us": 7,
+              "p95_us": 9.292,
+              "p99_us": 26.041,
+              "p999_us": 60.917,
+              "max_us": 2031.375
+            },
+            "UPDATE": {
+              "count": 4958,
+              "errors": 0,
+              "min_us": 111,
+              "avg_us": 1141.858,
+              "p50_us": 1117.833,
+              "p90_us": 1179.958,
+              "p95_us": 1197.833,
+              "p99_us": 3312.792,
+              "p999_us": 3923.875,
+              "max_us": 3956.375
+            }
+          }
+        },
+        "original": {
+          "engine": "original",
+          "qps": 130387.97757652756,
+          "elapsed_ms": 766.941875,
+          "total_ops": 100000,
+          "total_errors": 0,
+          "op_latencies": {
+            "READ": {
+              "count": 95013,
+              "errors": 51507,
+              "min_us": 0.375,
+              "avg_us": 3.411,
+              "p50_us": 1.75,
+              "p90_us": 7.041,
+              "p95_us": 10.792,
+              "p99_us": 30.25,
+              "p999_us": 74.042,
+              "max_us": 216.75
+            },
+            "UPDATE": {
+              "count": 4987,
+              "errors": 0,
+              "min_us": 387.958,
+              "avg_us": 1144.849,
+              "p50_us": 1108.416,
+              "p90_us": 1175.916,
+              "p95_us": 1197.458,
+              "p99_us": 3819.375,
+              "p999_us": 4181,
+              "max_us": 4233.416
+            }
+          }
+        }
+      }
+    },
+    {
+      "workload": "C",
+      "description": "100% Read-Only (User authentication)",
+      "distribution": "zipfian",
+      "records": 1000000,
+      "operations": 100000,
+      "threads": 8,
+      "engines": {
+        "bbolt": {
+          "engine": "bbolt",
+          "qps": 589019.0636726781,
+          "elapsed_ms": 169.773792,
+          "total_ops": 100000,
+          "total_errors": 0,
+          "op_latencies": {
+            "READ": {
+              "count": 100000,
+              "errors": 0,
+              "min_us": 0.875,
+              "avg_us": 12.252,
+              "p50_us": 4.334,
+              "p90_us": 31.625,
+              "p95_us": 48,
+              "p99_us": 97.958,
+              "p999_us": 235.334,
+              "max_us": 508.792
+            }
+          }
+        },
+        "modified": {
+          "engine": "modified",
+          "qps": 1161758.961155137,
+          "elapsed_ms": 86.076375,
+          "total_ops": 100000,
+          "total_errors": 0,
+          "op_latencies": {
+            "READ": {
+              "count": 100000,
+              "errors": 94912,
+              "min_us": 3.542,
+              "avg_us": 12.194,
+              "p50_us": 9.125,
+              "p90_us": 18.375,
+              "p95_us": 25.291,
+              "p99_us": 47.292,
+              "p999_us": 107.458,
+              "max_us": 2230.375
+            }
+          }
+        },
+        "original": {
+          "engine": "original",
+          "qps": 891385.0999525266,
+          "elapsed_ms": 112.184958,
+          "total_ops": 100000,
+          "total_errors": 0,
+          "op_latencies": {
+            "READ": {
+              "count": 100000,
+              "errors": 95113,
+              "min_us": 3.209,
+              "avg_us": 13.213,
+              "p50_us": 9.625,
+              "p90_us": 23.042,
+              "p95_us": 34.333,
+              "p99_us": 65.75,
+              "p999_us": 122.5,
+              "max_us": 265.458
+            }
+          }
+        }
+      }
+    },
+    {
+      "workload": "D",
+      "description": "95% Read, 5% Insert (Latest activity)",
+      "distribution": "latest",
+      "records": 1000000,
+      "operations": 100000,
+      "threads": 8,
+      "engines": {
+        "bbolt": {
+          "engine": "bbolt",
+          "qps": 535.7946665151743,
+          "elapsed_ms": 186638.662625,
+          "total_ops": 100000,
+          "total_errors": 0,
+          "op_latencies": {
+            "INSERT": {
+              "count": 5014,
+              "errors": 0,
+              "min_us": 43.708,
+              "avg_us": 164.702,
+              "p50_us": 123.5,
+              "p90_us": 175.583,
+              "p95_us": 241.416,
+              "p99_us": 1237.833,
+              "p999_us": 4498.5,
+              "max_us": 14621.25
+            },
+            "READ": {
+              "count": 94986,
+              "errors": 0,
+              "min_us": 1.167,
+              "avg_us": 6.585,
+              "p50_us": 4.5,
+              "p90_us": 12.083,
+              "p95_us": 15.875,
+              "p99_us": 24.958,
+              "p999_us": 135.625,
+              "max_us": 5114.667
+            }
+          }
+        },
+        "modified": {
+          "engine": "modified",
+          "qps": 519.3446021662044,
+          "elapsed_ms": 192550.379041,
+          "total_ops": 100000,
+          "total_errors": 0,
+          "op_latencies": {
+            "INSERT": {
+              "count": 5080,
+              "errors": 0,
+              "min_us": 6.917,
+              "avg_us": 105.969,
+              "p50_us": 46.959,
+              "p90_us": 75.584,
+              "p95_us": 99.5,
+              "p99_us": 2285.542,
+              "p999_us": 6871.583,
+              "max_us": 11185.5
+            },
+            "READ": {
+              "count": 94920,
+              "errors": 21809,
+              "min_us": 0.791,
+              "avg_us": 10.251,
+              "p50_us": 5.75,
+              "p90_us": 19.458,
+              "p95_us": 30.5,
+              "p99_us": 48.333,
+              "p999_us": 100.083,
+              "max_us": 13795.5
+            }
+          }
+        },
+        "original": {
+          "engine": "original",
+          "qps": 520.6533718898028,
+          "elapsed_ms": 192066.363917,
+          "total_ops": 100000,
+          "total_errors": 0,
+          "op_latencies": {
+            "INSERT": {
+              "count": 5037,
+              "errors": 0,
+              "min_us": 8.583,
+              "avg_us": 123.547,
+              "p50_us": 48.125,
+              "p90_us": 78.833,
+              "p95_us": 194.833,
+              "p99_us": 1980.625,
+              "p999_us": 5186.5,
+              "max_us": 10677.375
+            },
+            "READ": {
+              "count": 94963,
+              "errors": 21859,
+              "min_us": 0.875,
+              "avg_us": 10.433,
+              "p50_us": 6.042,
+              "p90_us": 20.417,
+              "p95_us": 31.042,
+              "p99_us": 50.625,
+              "p999_us": 115.208,
+              "max_us": 5933
+            }
+          }
+        }
+      }
+    },
+    {
+      "workload": "E",
+      "description": "95% Range Scan, 5% Insert (Time-series / Threads)",
+      "distribution": "zipfian",
+      "records": 1000000,
+      "operations": 100000,
+      "threads": 8,
+      "engines": {
+        "bbolt": {
+          "engine": "bbolt",
+          "qps": 28476.286580511736,
+          "elapsed_ms": 3511.693834,
+          "total_ops": 100000,
+          "total_errors": 0,
+          "op_latencies": {
+            "INSERT": {
+              "count": 4999,
+              "errors": 0,
+              "min_us": 39.708,
+              "avg_us": 503.306,
+              "p50_us": 368.417,
+              "p90_us": 1071.666,
+              "p95_us": 1339.791,
+              "p99_us": 1930.459,
+              "p999_us": 9671.083,
+              "max_us": 10050.666
+            },
+            "SCAN": {
+              "count": 95001,
+              "errors": 0,
+              "min_us": 1.167,
+              "avg_us": 263.97,
+              "p50_us": 165.25,
+              "p90_us": 608.125,
+              "p95_us": 790.083,
+              "p99_us": 1256.875,
+              "p999_us": 1953,
+              "max_us": 20548.125
+            }
+          }
+        },
+        "modified": {
+          "engine": "modified",
+          "qps": 27107.05266571497,
+          "elapsed_ms": 3689.076833,
+          "total_ops": 100000,
+          "total_errors": 0,
+          "op_latencies": {
+            "INSERT": {
+              "count": 4977,
+              "errors": 0,
+              "min_us": 31.417,
+              "avg_us": 1081.917,
+              "p50_us": 1062.708,
+              "p90_us": 1660.834,
+              "p95_us": 2236.125,
+              "p99_us": 4044.125,
+              "p999_us": 20671.417,
+              "max_us": 23343.083
+            },
+            "SCAN": {
+              "count": 95023,
+              "errors": 0,
+              "min_us": 8.333,
+              "avg_us": 251.999,
+              "p50_us": 165,
+              "p90_us": 417.25,
+              "p95_us": 687.5,
+              "p99_us": 1908.792,
+              "p999_us": 6084.833,
+              "max_us": 24051.333
+            }
+          }
+        },
+        "original": {
+          "engine": "original",
+          "qps": 25415.545225536534,
+          "elapsed_ms": 3934.599833,
+          "total_ops": 100000,
+          "total_errors": 0,
+          "op_latencies": {
+            "INSERT": {
+              "count": 4910,
+              "errors": 0,
+              "min_us": 28.25,
+              "avg_us": 1164.27,
+              "p50_us": 1081.709,
+              "p90_us": 1988.958,
+              "p95_us": 2813.959,
+              "p99_us": 4390.083,
+              "p999_us": 7260.75,
+              "max_us": 13832.167
+            },
+            "SCAN": {
+              "count": 95090,
+              "errors": 0,
+              "min_us": 15.208,
+              "avg_us": 269.014,
+              "p50_us": 172.583,
+              "p90_us": 452.542,
+              "p95_us": 726.958,
+              "p99_us": 2045.083,
+              "p999_us": 6696.209,
+              "max_us": 36824.583
+            }
+          }
+        }
+      }
+    },
+    {
+      "workload": "F",
+      "description": "50% Read, 50% Read-Modify-Write (Bank transactions)",
+      "distribution": "zipfian",
+      "records": 1000000,
+      "operations": 100000,
+      "threads": 8,
+      "engines": {
+        "bbolt": {
+          "engine": "bbolt",
+          "qps": 50594.42548100448,
+          "elapsed_ms": 1976.502333,
+          "total_ops": 100000,
+          "total_errors": 0,
+          "op_latencies": {
+            "READ": {
+              "count": 49913,
+              "errors": 0,
+              "min_us": 0.833,
+              "avg_us": 2.331,
+              "p50_us": 1.667,
+              "p90_us": 3.375,
+              "p95_us": 3.833,
+              "p99_us": 6.333,
+              "p999_us": 46.625,
+              "max_us": 1721.208
+            },
+            "RMW": {
+              "count": 50087,
+              "errors": 0,
+              "min_us": 29.25,
+              "avg_us": 312.486,
+              "p50_us": 37.542,
+              "p90_us": 1090.667,
+              "p95_us": 1104.459,
+              "p99_us": 1213.834,
+              "p999_us": 1331.166,
+              "max_us": 2822.333
+            }
+          }
+        },
+        "modified": {
+          "engine": "modified",
+          "qps": 248619.51466134263,
+          "elapsed_ms": 402.221041,
+          "total_ops": 100000,
+          "total_errors": 0,
+          "op_latencies": {
+            "READ": {
+              "count": 50344,
+              "errors": 47767,
+              "min_us": 2,
+              "avg_us": 10.169,
+              "p50_us": 7.375,
+              "p90_us": 13.833,
+              "p95_us": 19.25,
+              "p99_us": 43.167,
+              "p999_us": 131.625,
+              "max_us": 2221.75
+            },
+            "RMW": {
+              "count": 49656,
+              "errors": 47146,
+              "min_us": 79.041,
+              "avg_us": 1117.945,
+              "p50_us": 1089.083,
+              "p90_us": 1199.042,
+              "p95_us": 1221.917,
+              "p99_us": 3793.125,
+              "p999_us": 4048.541,
+              "max_us": 4055.208
+            }
+          }
+        },
+        "original": {
+          "engine": "original",
+          "qps": 253246.16698187668,
+          "elapsed_ms": 394.872709,
+          "total_ops": 100000,
+          "total_errors": 0,
+          "op_latencies": {
+            "READ": {
+              "count": 50017,
+              "errors": 47482,
+              "min_us": 2,
+              "avg_us": 9.94,
+              "p50_us": 7.791,
+              "p90_us": 14.916,
+              "p95_us": 21.583,
+              "p99_us": 48.542,
+              "p999_us": 86.958,
+              "max_us": 134.666
+            },
+            "RMW": {
+              "count": 49983,
+              "errors": 47523,
+              "min_us": 91.25,
+              "avg_us": 1081.674,
+              "p50_us": 1064,
+              "p90_us": 1202.458,
+              "p95_us": 1235.125,
+              "p99_us": 3644.875,
+              "p999_us": 4323.083,
+              "max_us": 4501.625
+            }
+          }
+        }
+      }
+    }
+  ]
+}

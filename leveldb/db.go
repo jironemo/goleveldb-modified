@@ -98,6 +98,9 @@ type DB struct {
 	btrees   []*hbtree.BTree
 	btreesMu sync.RWMutex
 
+	// Fast O(1) table file cache for direct pread access
+	tfileCache sync.Map
+
 	// Track corrupted files to bypass B-tree lookup on query.
 	corruptedFiles map[int64]error
 }
@@ -862,32 +865,34 @@ func (db *DB) get(auxm *memdb.DB, auxt tFiles, key []byte, seq uint64, ro *opt.R
 	}
 
 	// Fall back to standard read path if querying a key that overlaps with a corrupted file.
-	hasCorrupted := false
-	v := db.s.version()
-	for _, files := range v.levels {
-		for _, f := range files {
-			if _, ok := db.corruptedFiles[f.fd.Num]; ok {
-				if db.s.icmp.uCompare(key, f.imin.ukey()) >= 0 && db.s.icmp.uCompare(key, f.imax.ukey()) <= 0 {
-					hasCorrupted = true
-					break
+	if len(db.corruptedFiles) > 0 {
+		hasCorrupted := false
+		v := db.s.version()
+		for _, files := range v.levels {
+			for _, f := range files {
+				if _, ok := db.corruptedFiles[f.fd.Num]; ok {
+					if db.s.icmp.uCompare(key, f.imin.ukey()) >= 0 && db.s.icmp.uCompare(key, f.imax.ukey()) <= 0 {
+						hasCorrupted = true
+						break
+					}
 				}
 			}
+			if hasCorrupted {
+				break
+			}
 		}
-		if hasCorrupted {
-			break
-		}
-	}
-	v.release()
-
-	if hasCorrupted {
-		v := db.s.version()
-		var cSched bool
-		value, cSched, err = v.get(nil, ikey, ro, false)
 		v.release()
-		if cSched {
-			db.compTrigger(db.tcompCmdC)
+
+		if hasCorrupted {
+			v := db.s.version()
+			var cSched bool
+			value, cSched, err = v.get(nil, ikey, ro, false)
+			v.release()
+			if cSched {
+				db.compTrigger(db.tcompCmdC)
+			}
+			return
 		}
-		return
 	}
 
 	// Disk Tier Access - Seek Compaction Sampling!
@@ -1394,22 +1399,13 @@ func (db *DB) Close() error {
 	return err
 }
 
-// rebuildBTreeForLevel reconstructs the B-tree for the given disk level from active files.
-// Acquires the lock internally.
-func (db *DB) rebuildBTreeForLevel(level int) error {
-	db.btreesMu.Lock()
-	defer db.btreesMu.Unlock()
-	return db.rebuildBTreeForLevelLocked(level)
-}
-
-// rebuildBTreeForLevelLocked reconstructs the B-tree for the given disk level.
-// Assumes db.btreesMu is already held by the caller.
-func (db *DB) rebuildBTreeForLevelLocked(level int) error {
+// buildBTreeForLevel builds the new B-tree for the given level from active files WITHOUT holding btreesMu.
+func (db *DB) buildBTreeForLevel(level int) (*hbtree.BTree, error) {
 	v := db.s.version()
 	defer v.release()
 
 	if level < 0 {
-		return nil
+		return nil, nil
 	}
 
 	var tables tFiles
@@ -1420,10 +1416,11 @@ func (db *DB) rebuildBTreeForLevelLocked(level int) error {
 	newBTree := hbtree.NewBTree(16, db.s.icmp.ucmp)
 
 	for _, t := range tables {
+		db.tfileCache.Store(t.fd.Num, t)
 		ch, err := db.s.tops.open(t)
 		if err != nil {
 			db.corruptedFiles[t.fd.Num] = err
-			db.s.logf("rebuildBTreeForLevelLocked: skip failed table %d: %v", t.fd.Num, err)
+			db.s.logf("buildBTreeForLevel: skip failed table %d: %v", t.fd.Num, err)
 			continue
 		}
 		tr := ch.Value().(*table.Reader)
@@ -1444,11 +1441,48 @@ func (db *DB) rebuildBTreeForLevelLocked(level int) error {
 		ch.Release()
 		if err != nil {
 			db.corruptedFiles[t.fd.Num] = err
-			db.s.logf("rebuildBTreeForLevelLocked: skip failed table %d: %v", t.fd.Num, err)
+			db.s.logf("buildBTreeForLevel: skip failed table %d: %v", t.fd.Num, err)
 			continue
 		}
 	}
+	return newBTree, nil
+}
 
+// installBTreeForLevel safely installs a built B-tree into db.btrees under lock.
+func (db *DB) installBTreeForLevel(level int, newBTree *hbtree.BTree) {
+	if newBTree == nil || level < 0 {
+		return
+	}
+	db.btreesMu.Lock()
+	if level >= len(db.btrees) {
+		newBtrees := make([]*hbtree.BTree, level+1)
+		copy(newBtrees, db.btrees)
+		for i := len(db.btrees); i <= level; i++ {
+			newBtrees[i] = hbtree.NewBTree(16, db.s.icmp.ucmp)
+		}
+		db.btrees = newBtrees
+	}
+	db.btrees[level] = newBTree
+	db.btreesMu.Unlock()
+}
+
+// rebuildBTreeForLevel reconstructs the B-tree for the given disk level without blocking concurrent readers during build.
+func (db *DB) rebuildBTreeForLevel(level int) error {
+	newBTree, err := db.buildBTreeForLevel(level)
+	if err != nil {
+		return err
+	}
+	db.installBTreeForLevel(level, newBTree)
+	return nil
+}
+
+// rebuildBTreeForLevelLocked reconstructs the B-tree for the given disk level.
+// Assumes db.btreesMu is already held by the caller.
+func (db *DB) rebuildBTreeForLevelLocked(level int) error {
+	newBTree, err := db.buildBTreeForLevel(level)
+	if err != nil {
+		return err
+	}
 	if level >= len(db.btrees) {
 		newBtrees := make([]*hbtree.BTree, level+1)
 		copy(newBtrees, db.btrees)
@@ -1461,13 +1495,17 @@ func (db *DB) rebuildBTreeForLevelLocked(level int) error {
 	return nil
 }
 
-// findTFile finds the active tFile in the current version by its file ID (file number).
+// findTFile finds the active tFile in the current version by its file ID (file number) with O(1) cache.
 func (db *DB) findTFile(fileID int64) (*tFile, int, bool) {
+	if val, ok := db.tfileCache.Load(fileID); ok {
+		return val.(*tFile), 0, true
+	}
 	v := db.s.version()
 	defer v.release()
 	for level, files := range v.levels {
 		for _, f := range files {
 			if f.fd.Num == fileID {
+				db.tfileCache.Store(fileID, f)
 				return f, level, true
 			}
 		}

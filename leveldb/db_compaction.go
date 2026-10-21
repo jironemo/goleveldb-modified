@@ -320,12 +320,11 @@ func (db *DB) memCompaction() {
 	rec.setSeqNum(db.frozenSeq)
 
 	// Commit.
-	db.btreesMu.Lock()
 	stats.startTimer()
 	db.compactionCommit("memdb", rec)
 	stats.stopTimer()
-	db.rebuildBTreeForLevelLocked(flushLevel)
-	db.btreesMu.Unlock()
+	newBTree, _ := db.buildBTreeForLevel(flushLevel)
+	db.installBTreeForLevel(flushLevel, newBTree)
 
 	db.logf("memdb@flush committed F·%d T·%v", len(rec.addedTables), stats.duration)
 
@@ -565,12 +564,11 @@ func (db *DB) tableCompaction(c *compaction, noTrivial bool) {
 		t := c.levels[0][0]
 		db.logf("table@move L%d@%d -> L%d", c.sourceLevel, t.fd.Num, c.sourceLevel+1)
 		rec.delTable(c.sourceLevel, t.fd.Num)
-		rec.addTableFile(c.sourceLevel+1, t)
-		db.btreesMu.Lock()
 		db.compactionCommit("table-move", rec)
-		db.rebuildBTreeForLevelLocked(c.sourceLevel)
-		db.rebuildBTreeForLevelLocked(c.sourceLevel + 1)
-		db.btreesMu.Unlock()
+		newBTSource, _ := db.buildBTreeForLevel(c.sourceLevel)
+		newBTDest, _ := db.buildBTreeForLevel(c.sourceLevel + 1)
+		db.installBTreeForLevel(c.sourceLevel, newBTSource)
+		db.installBTreeForLevel(c.sourceLevel+1, newBTDest)
 		return
 	}
 
@@ -599,13 +597,16 @@ func (db *DB) tableCompaction(c *compaction, noTrivial bool) {
 	db.compactionTransact("table@build", b)
 
 	// Commit.
-	db.btreesMu.Lock()
 	stats[1].startTimer()
 	db.compactionCommit("table", rec)
 	stats[1].stopTimer()
-	db.rebuildBTreeForLevelLocked(c.sourceLevel)
-	db.rebuildBTreeForLevelLocked(c.sourceLevel + 1)
-	db.btreesMu.Unlock()
+	for _, dt := range rec.deletedTables {
+		db.tfileCache.Delete(dt.num)
+	}
+	newBTSource, _ := db.buildBTreeForLevel(c.sourceLevel)
+	newBTDest, _ := db.buildBTreeForLevel(c.sourceLevel + 1)
+	db.installBTreeForLevel(c.sourceLevel, newBTSource)
+	db.installBTreeForLevel(c.sourceLevel+1, newBTDest)
 
 	resultSize := stats[1].write
 	db.logf("table@compaction committed F%s S%s Ke·%d D·%d T·%v", sint(len(rec.addedTables)-len(rec.deletedTables)), sshortenb(resultSize-sourceSize), b.kerrCnt, b.dropCnt, stats[1].duration)

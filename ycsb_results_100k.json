@@ -1,0 +1,366 @@
+{
+  "timestamp": "2026-09-11T13:12:39+06:30",
+  "platform": "Apple Silicon (M-Series, 10-Core)",
+  "record_count": 100000,
+  "operation_count": 100000,
+  "thread_count": 8,
+  "total_runs": 1,
+  "filter_stats": {
+    "total_keys": 100000,
+    "mlp_fast_path_keys": 99988,
+    "overflow_bloom_keys": 12,
+    "fast_path_pct": 99.988,
+    "overflow_pct": 0.012,
+    "standard_bloom_bytes": 125001,
+    "overflow_bloom_bytes": 16,
+    "space_saved_pct": 99.98720010239917
+  },
+  "summary": [
+    {
+      "workload": "F",
+      "description": "50% Read, 50% Read-Modify-Write (Bank transactions)",
+      "distribution": "zipfian",
+      "engines": {
+        "bbolt": {
+          "engine": "bbolt",
+          "mean_qps": 73060.97541151139,
+          "stddev_qps": 0,
+          "min_qps": 73060.97541151139,
+          "max_qps": 73060.97541151139,
+          "mean_elapsed_ms": 1368.71975,
+          "individual_qps": [
+            73060.97541151139
+          ],
+          "op_latencies": {
+            "READ": {
+              "count": 50222,
+              "errors": 0,
+              "min_us": 0.542,
+              "avg_us": 1.629,
+              "p50_us": 1.083,
+              "p90_us": 2.25,
+              "p95_us": 2.667,
+              "p99_us": 6.5,
+              "p999_us": 52.917,
+              "max_us": 3169.333
+            },
+            "RMW": {
+              "count": 49778,
+              "errors": 0,
+              "min_us": 17.125,
+              "avg_us": 217.46,
+              "p50_us": 23.125,
+              "p90_us": 1051.459,
+              "p95_us": 1064,
+              "p99_us": 1158.083,
+              "p999_us": 1448.25,
+              "max_us": 8392.083
+            }
+          }
+        },
+        "modified": {
+          "engine": "modified",
+          "mean_qps": 66968.9664115334,
+          "stddev_qps": 0,
+          "min_qps": 66968.9664115334,
+          "max_qps": 66968.9664115334,
+          "mean_elapsed_ms": 1493.228959,
+          "individual_qps": [
+            66968.9664115334
+          ],
+          "op_latencies": {
+            "READ": {
+              "count": 50446,
+              "errors": 6359,
+              "min_us": 0.458,
+              "avg_us": 5.347,
+              "p50_us": 2.5,
+              "p90_us": 10.959,
+              "p95_us": 19.75,
+              "p99_us": 48.917,
+              "p999_us": 110.25,
+              "max_us": 1252.166
+            },
+            "RMW": {
+              "count": 49554,
+              "errors": 6351,
+              "min_us": 0.708,
+              "avg_us": 234.394,
+              "p50_us": 42.5,
+              "p90_us": 1107.542,
+              "p95_us": 1167.375,
+              "p99_us": 3529.959,
+              "p999_us": 4651.375,
+              "max_us": 30816
+            }
+          }
+        },
+        "original": {
+          "engine": "original",
+          "mean_qps": 78826.97316376373,
+          "stddev_qps": 0,
+          "min_qps": 78826.97316376373,
+          "max_qps": 78826.97316376373,
+          "mean_elapsed_ms": 1268.601292,
+          "individual_qps": [
+            78826.97316376373
+          ],
+          "op_latencies": {
+            "READ": {
+              "count": 49942,
+              "errors": 5224,
+              "min_us": 0.542,
+              "avg_us": 6.328,
+              "p50_us": 3.042,
+              "p90_us": 12.5,
+              "p95_us": 22.042,
+              "p99_us": 54.916,
+              "p999_us": 135.5,
+              "max_us": 3956.5
+            },
+            "RMW": {
+              "count": 50058,
+              "errors": 5124,
+              "min_us": 0.833,
+              "avg_us": 195.243,
+              "p50_us": 45,
+              "p90_us": 122.125,
+              "p95_us": 1153.291,
+              "p99_us": 3492.542,
+              "p999_us": 4775.708,
+              "max_us": 31447.209
+            }
+          }
+        }
+      }
+    }
+  ],
+  "runs": [
+    {
+      "run_index": 1,
+      "timestamp": "2026-09-11T13:12:29+06:30",
+      "workloads": [
+        {
+          "workload": "F",
+          "description": "50% Read, 50% Read-Modify-Write (Bank transactions)",
+          "distribution": "zipfian",
+          "records": 100000,
+          "operations": 100000,
+          "threads": 8,
+          "engines": {
+            "bbolt": {
+              "engine": "bbolt",
+              "qps": 73060.97541151139,
+              "elapsed_ms": 1368.71975,
+              "total_ops": 100000,
+              "total_errors": 0,
+              "op_latencies": {
+                "READ": {
+                  "count": 50222,
+                  "errors": 0,
+                  "min_us": 0.542,
+                  "avg_us": 1.629,
+                  "p50_us": 1.083,
+                  "p90_us": 2.25,
+                  "p95_us": 2.667,
+                  "p99_us": 6.5,
+                  "p999_us": 52.917,
+                  "max_us": 3169.333
+                },
+                "RMW": {
+                  "count": 49778,
+                  "errors": 0,
+                  "min_us": 17.125,
+                  "avg_us": 217.46,
+                  "p50_us": 23.125,
+                  "p90_us": 1051.459,
+                  "p95_us": 1064,
+                  "p99_us": 1158.083,
+                  "p999_us": 1448.25,
+                  "max_us": 8392.083
+                }
+              }
+            },
+            "modified": {
+              "engine": "modified",
+              "qps": 66968.9664115334,
+              "elapsed_ms": 1493.228959,
+              "total_ops": 100000,
+              "total_errors": 12710,
+              "op_latencies": {
+                "READ": {
+                  "count": 50446,
+                  "errors": 6359,
+                  "min_us": 0.458,
+                  "avg_us": 5.347,
+                  "p50_us": 2.5,
+                  "p90_us": 10.959,
+                  "p95_us": 19.75,
+                  "p99_us": 48.917,
+                  "p999_us": 110.25,
+                  "max_us": 1252.166
+                },
+                "RMW": {
+                  "count": 49554,
+                  "errors": 6351,
+                  "min_us": 0.708,
+                  "avg_us": 234.394,
+                  "p50_us": 42.5,
+                  "p90_us": 1107.542,
+                  "p95_us": 1167.375,
+                  "p99_us": 3529.959,
+                  "p999_us": 4651.375,
+                  "max_us": 30816
+                }
+              }
+            },
+            "original": {
+              "engine": "original",
+              "qps": 78826.97316376373,
+              "elapsed_ms": 1268.601292,
+              "total_ops": 100000,
+              "total_errors": 10348,
+              "op_latencies": {
+                "READ": {
+                  "count": 49942,
+                  "errors": 5224,
+                  "min_us": 0.542,
+                  "avg_us": 6.328,
+                  "p50_us": 3.042,
+                  "p90_us": 12.5,
+                  "p95_us": 22.042,
+                  "p99_us": 54.916,
+                  "p999_us": 135.5,
+                  "max_us": 3956.5
+                },
+                "RMW": {
+                  "count": 50058,
+                  "errors": 5124,
+                  "min_us": 0.833,
+                  "avg_us": 195.243,
+                  "p50_us": 45,
+                  "p90_us": 122.125,
+                  "p95_us": 1153.291,
+                  "p99_us": 3492.542,
+                  "p999_us": 4775.708,
+                  "max_us": 31447.209
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "workloads": [
+    {
+      "workload": "F",
+      "description": "50% Read, 50% Read-Modify-Write (Bank transactions)",
+      "distribution": "zipfian",
+      "records": 100000,
+      "operations": 100000,
+      "threads": 8,
+      "engines": {
+        "bbolt": {
+          "engine": "bbolt",
+          "qps": 73060.97541151139,
+          "elapsed_ms": 1368.71975,
+          "total_ops": 100000,
+          "total_errors": 0,
+          "op_latencies": {
+            "READ": {
+              "count": 50222,
+              "errors": 0,
+              "min_us": 0.542,
+              "avg_us": 1.629,
+              "p50_us": 1.083,
+              "p90_us": 2.25,
+              "p95_us": 2.667,
+              "p99_us": 6.5,
+              "p999_us": 52.917,
+              "max_us": 3169.333
+            },
+            "RMW": {
+              "count": 49778,
+              "errors": 0,
+              "min_us": 17.125,
+              "avg_us": 217.46,
+              "p50_us": 23.125,
+              "p90_us": 1051.459,
+              "p95_us": 1064,
+              "p99_us": 1158.083,
+              "p999_us": 1448.25,
+              "max_us": 8392.083
+            }
+          }
+        },
+        "modified": {
+          "engine": "modified",
+          "qps": 66968.9664115334,
+          "elapsed_ms": 1493.228959,
+          "total_ops": 100000,
+          "total_errors": 0,
+          "op_latencies": {
+            "READ": {
+              "count": 50446,
+              "errors": 6359,
+              "min_us": 0.458,
+              "avg_us": 5.347,
+              "p50_us": 2.5,
+              "p90_us": 10.959,
+              "p95_us": 19.75,
+              "p99_us": 48.917,
+              "p999_us": 110.25,
+              "max_us": 1252.166
+            },
+            "RMW": {
+              "count": 49554,
+              "errors": 6351,
+              "min_us": 0.708,
+              "avg_us": 234.394,
+              "p50_us": 42.5,
+              "p90_us": 1107.542,
+              "p95_us": 1167.375,
+              "p99_us": 3529.959,
+              "p999_us": 4651.375,
+              "max_us": 30816
+            }
+          }
+        },
+        "original": {
+          "engine": "original",
+          "qps": 78826.97316376373,
+          "elapsed_ms": 1268.601292,
+          "total_ops": 100000,
+          "total_errors": 0,
+          "op_latencies": {
+            "READ": {
+              "count": 49942,
+              "errors": 5224,
+              "min_us": 0.542,
+              "avg_us": 6.328,
+              "p50_us": 3.042,
+              "p90_us": 12.5,
+              "p95_us": 22.042,
+              "p99_us": 54.916,
+              "p999_us": 135.5,
+              "max_us": 3956.5
+            },
+            "RMW": {
+              "count": 50058,
+              "errors": 5124,
+              "min_us": 0.833,
+              "avg_us": 195.243,
+              "p50_us": 45,
+              "p90_us": 122.125,
+              "p95_us": 1153.291,
+              "p99_us": 3492.542,
+              "p999_us": 4775.708,
+              "max_us": 31447.209
+            }
+          }
+        }
+      }
+    }
+  ]
+}

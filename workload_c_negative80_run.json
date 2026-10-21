@@ -1,0 +1,258 @@
+{
+  "timestamp": "2026-09-09T16:55:00+06:30",
+  "platform": "Apple Silicon (M-Series, 10-Core)",
+  "record_count": 1000000,
+  "operation_count": 100000,
+  "thread_count": 8,
+  "total_runs": 1,
+  "filter_stats": {
+    "total_keys": 1000000,
+    "mlp_fast_path_keys": 999816,
+    "overflow_bloom_keys": 184,
+    "fast_path_pct": 99.9816,
+    "overflow_pct": 0.0184,
+    "standard_bloom_bytes": 1250001,
+    "overflow_bloom_bytes": 231,
+    "space_saved_pct": 99.98152001478398
+  },
+  "summary": [
+    {
+      "workload": "C",
+      "description": "100% Read-Only (User authentication)",
+      "distribution": "zipfian",
+      "engines": {
+        "bbolt": {
+          "engine": "bbolt",
+          "mean_qps": 1162603.6942220677,
+          "stddev_qps": 0,
+          "min_qps": 1162603.6942220677,
+          "max_qps": 1162603.6942220677,
+          "mean_elapsed_ms": 86.013833,
+          "individual_qps": [
+            1162603.6942220677
+          ],
+          "op_latencies": {
+            "READ": {
+              "count": 100000,
+              "errors": 80119,
+              "min_us": 0.25,
+              "avg_us": 6.18,
+              "p50_us": 1.75,
+              "p90_us": 17.792,
+              "p95_us": 27.167,
+              "p99_us": 50.25,
+              "p999_us": 117,
+              "max_us": 418.75
+            }
+          }
+        },
+        "modified": {
+          "engine": "modified",
+          "mean_qps": 1401168.574591209,
+          "stddev_qps": 0,
+          "min_qps": 1401168.574591209,
+          "max_qps": 1401168.574591209,
+          "mean_elapsed_ms": 71.369,
+          "individual_qps": [
+            1401168.574591209
+          ],
+          "op_latencies": {
+            "READ": {
+              "count": 100000,
+              "errors": 99575,
+              "min_us": 0.375,
+              "avg_us": 4.374,
+              "p50_us": 2.416,
+              "p90_us": 9.875,
+              "p95_us": 16.541,
+              "p99_us": 33.958,
+              "p999_us": 73.583,
+              "max_us": 291.416
+            }
+          }
+        },
+        "original": {
+          "engine": "original",
+          "mean_qps": 1138081.5445897048,
+          "stddev_qps": 0,
+          "min_qps": 1138081.5445897048,
+          "max_qps": 1138081.5445897048,
+          "mean_elapsed_ms": 87.867166,
+          "individual_qps": [
+            1138081.5445897048
+          ],
+          "op_latencies": {
+            "READ": {
+              "count": 100000,
+              "errors": 99329,
+              "min_us": 0.458,
+              "avg_us": 5.819,
+              "p50_us": 2.833,
+              "p90_us": 14.041,
+              "p95_us": 22.541,
+              "p99_us": 46.25,
+              "p999_us": 99,
+              "max_us": 1426.792
+            }
+          }
+        }
+      }
+    }
+  ],
+  "runs": [
+    {
+      "run_index": 1,
+      "timestamp": "2026-09-09T16:52:14+06:30",
+      "workloads": [
+        {
+          "workload": "C",
+          "description": "100% Read-Only (User authentication)",
+          "distribution": "zipfian",
+          "records": 1000000,
+          "operations": 100000,
+          "threads": 8,
+          "engines": {
+            "bbolt": {
+              "engine": "bbolt",
+              "qps": 1162603.6942220677,
+              "elapsed_ms": 86.013833,
+              "total_ops": 100000,
+              "total_errors": 80119,
+              "op_latencies": {
+                "READ": {
+                  "count": 100000,
+                  "errors": 80119,
+                  "min_us": 0.25,
+                  "avg_us": 6.18,
+                  "p50_us": 1.75,
+                  "p90_us": 17.792,
+                  "p95_us": 27.167,
+                  "p99_us": 50.25,
+                  "p999_us": 117,
+                  "max_us": 418.75
+                }
+              }
+            },
+            "modified": {
+              "engine": "modified",
+              "qps": 1401168.574591209,
+              "elapsed_ms": 71.369,
+              "total_ops": 100000,
+              "total_errors": 99575,
+              "op_latencies": {
+                "READ": {
+                  "count": 100000,
+                  "errors": 99575,
+                  "min_us": 0.375,
+                  "avg_us": 4.374,
+                  "p50_us": 2.416,
+                  "p90_us": 9.875,
+                  "p95_us": 16.541,
+                  "p99_us": 33.958,
+                  "p999_us": 73.583,
+                  "max_us": 291.416
+                }
+              }
+            },
+            "original": {
+              "engine": "original",
+              "qps": 1138081.5445897048,
+              "elapsed_ms": 87.867166,
+              "total_ops": 100000,
+              "total_errors": 99329,
+              "op_latencies": {
+                "READ": {
+                  "count": 100000,
+                  "errors": 99329,
+                  "min_us": 0.458,
+                  "avg_us": 5.819,
+                  "p50_us": 2.833,
+                  "p90_us": 14.041,
+                  "p95_us": 22.541,
+                  "p99_us": 46.25,
+                  "p999_us": 99,
+                  "max_us": 1426.792
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "workloads": [
+    {
+      "workload": "C",
+      "description": "100% Read-Only (User authentication)",
+      "distribution": "zipfian",
+      "records": 1000000,
+      "operations": 100000,
+      "threads": 8,
+      "engines": {
+        "bbolt": {
+          "engine": "bbolt",
+          "qps": 1162603.6942220677,
+          "elapsed_ms": 86.013833,
+          "total_ops": 100000,
+          "total_errors": 0,
+          "op_latencies": {
+            "READ": {
+              "count": 100000,
+              "errors": 80119,
+              "min_us": 0.25,
+              "avg_us": 6.18,
+              "p50_us": 1.75,
+              "p90_us": 17.792,
+              "p95_us": 27.167,
+              "p99_us": 50.25,
+              "p999_us": 117,
+              "max_us": 418.75
+            }
+          }
+        },
+        "modified": {
+          "engine": "modified",
+          "qps": 1401168.574591209,
+          "elapsed_ms": 71.369,
+          "total_ops": 100000,
+          "total_errors": 0,
+          "op_latencies": {
+            "READ": {
+              "count": 100000,
+              "errors": 99575,
+              "min_us": 0.375,
+              "avg_us": 4.374,
+              "p50_us": 2.416,
+              "p90_us": 9.875,
+              "p95_us": 16.541,
+              "p99_us": 33.958,
+              "p999_us": 73.583,
+              "max_us": 291.416
+            }
+          }
+        },
+        "original": {
+          "engine": "original",
+          "qps": 1138081.5445897048,
+          "elapsed_ms": 87.867166,
+          "total_ops": 100000,
+          "total_errors": 0,
+          "op_latencies": {
+            "READ": {
+              "count": 100000,
+              "errors": 99329,
+              "min_us": 0.458,
+              "avg_us": 5.819,
+              "p50_us": 2.833,
+              "p90_us": 14.041,
+              "p95_us": 22.541,
+              "p99_us": 46.25,
+              "p999_us": 99,
+              "max_us": 1426.792
+            }
+          }
+        }
+      }
+    }
+  ]
+}

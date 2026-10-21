@@ -1,0 +1,20 @@
+=============== Sep 1, 2026 (+0630) ===============
+15:42:25.309239 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+15:42:25.323396 db@open opening
+15:42:25.323670 version@stat F·[] S·0B[] Sc·[]
+15:42:25.327203 db@janitor F·2 G·0
+15:42:25.327216 db@open done T·3.801625ms
+15:42:25.341332 memdb@flush N·3609 S·3MiB
+15:42:25.352349 memdb@flush created L0@3 N·3609 S·4MiB "use..000,v3":"use..209,v3604"
+15:42:25.352371 version@stat F·[1] S·4MiB[4MiB] Sc·[0.25]
+15:42:25.360726 memdb@flush committed F·1 T·18.077708ms
+15:42:25.360840 journal@remove removed @1
+15:42:25.365665 memdb@flush N·3609 S·3MiB
+15:42:25.376462 memdb@flush created L0@5 N·3609 S·4MiB "use..475,v3615":"use..673,v7212"
+15:42:25.376477 version@stat F·[2] S·8MiB[8MiB] Sc·[0.50]
+15:42:25.387200 memdb@flush committed F·1 T·18.5015ms
+15:42:25.387318 journal@remove removed @2
+15:42:25.389838 db@close closing
+15:42:25.389938 reference loop already exist
+15:42:25.389940 reference loop already exist
+15:42:25.389942 db@close done T·103.792µs

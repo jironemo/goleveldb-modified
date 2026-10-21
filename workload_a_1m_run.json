@@ -1,0 +1,366 @@
+{
+  "timestamp": "2026-09-09T16:49:15+06:30",
+  "platform": "Apple Silicon (M-Series, 10-Core)",
+  "record_count": 1000000,
+  "operation_count": 100000,
+  "thread_count": 8,
+  "total_runs": 1,
+  "filter_stats": {
+    "total_keys": 1000000,
+    "mlp_fast_path_keys": 999816,
+    "overflow_bloom_keys": 184,
+    "fast_path_pct": 99.9816,
+    "overflow_pct": 0.0184,
+    "standard_bloom_bytes": 1250001,
+    "overflow_bloom_bytes": 231,
+    "space_saved_pct": 99.98152001478398
+  },
+  "summary": [
+    {
+      "workload": "A",
+      "description": "50% Read, 50% Update (Session store)",
+      "distribution": "zipfian",
+      "engines": {
+        "bbolt": {
+          "engine": "bbolt",
+          "mean_qps": 60811.63004618988,
+          "stddev_qps": 0,
+          "min_qps": 60811.63004618988,
+          "max_qps": 60811.63004618988,
+          "mean_elapsed_ms": 1644.422291,
+          "individual_qps": [
+            60811.63004618988
+          ],
+          "op_latencies": {
+            "READ": {
+              "count": 49959,
+              "errors": 0,
+              "min_us": 0.583,
+              "avg_us": 1.761,
+              "p50_us": 1.292,
+              "p90_us": 2.833,
+              "p95_us": 3.208,
+              "p99_us": 5.667,
+              "p999_us": 37.916,
+              "max_us": 122.375
+            },
+            "UPDATE": {
+              "count": 50041,
+              "errors": 0,
+              "min_us": 20,
+              "avg_us": 260.177,
+              "p50_us": 27.25,
+              "p90_us": 1061.25,
+              "p95_us": 1072.625,
+              "p99_us": 1139.875,
+              "p999_us": 1250.375,
+              "max_us": 149015.292
+            }
+          }
+        },
+        "modified": {
+          "engine": "modified",
+          "mean_qps": 310505.9289834065,
+          "stddev_qps": 0,
+          "min_qps": 310505.9289834065,
+          "max_qps": 310505.9289834065,
+          "mean_elapsed_ms": 322.055042,
+          "individual_qps": [
+            310505.9289834065
+          ],
+          "op_latencies": {
+            "READ": {
+              "count": 49999,
+              "errors": 20208,
+              "min_us": 0.25,
+              "avg_us": 2.712,
+              "p50_us": 1.125,
+              "p90_us": 6.792,
+              "p95_us": 11.167,
+              "p99_us": 22.625,
+              "p999_us": 43.583,
+              "max_us": 124.875
+            },
+            "UPDATE": {
+              "count": 50001,
+              "errors": 0,
+              "min_us": 2.333,
+              "avg_us": 47.388,
+              "p50_us": 25.292,
+              "p90_us": 43.125,
+              "p95_us": 51.625,
+              "p99_us": 1133.875,
+              "p999_us": 3573.041,
+              "max_us": 6421.708
+            }
+          }
+        },
+        "original": {
+          "engine": "original",
+          "mean_qps": 200643.49700170496,
+          "stddev_qps": 0,
+          "min_qps": 200643.49700170496,
+          "max_qps": 200643.49700170496,
+          "mean_elapsed_ms": 498.396417,
+          "individual_qps": [
+            200643.49700170496
+          ],
+          "op_latencies": {
+            "READ": {
+              "count": 49787,
+              "errors": 20089,
+              "min_us": 0.333,
+              "avg_us": 3.16,
+              "p50_us": 1.417,
+              "p90_us": 7.834,
+              "p95_us": 12.334,
+              "p99_us": 24.916,
+              "p999_us": 46.75,
+              "max_us": 167.417
+            },
+            "UPDATE": {
+              "count": 50213,
+              "errors": 0,
+              "min_us": 2.417,
+              "avg_us": 74.786,
+              "p50_us": 27.791,
+              "p90_us": 49.125,
+              "p95_us": 63.25,
+              "p99_us": 1170.25,
+              "p999_us": 3796.584,
+              "max_us": 7897.291
+            }
+          }
+        }
+      }
+    }
+  ],
+  "runs": [
+    {
+      "run_index": 1,
+      "timestamp": "2026-09-09T16:46:29+06:30",
+      "workloads": [
+        {
+          "workload": "A",
+          "description": "50% Read, 50% Update (Session store)",
+          "distribution": "zipfian",
+          "records": 1000000,
+          "operations": 100000,
+          "threads": 8,
+          "engines": {
+            "bbolt": {
+              "engine": "bbolt",
+              "qps": 60811.63004618988,
+              "elapsed_ms": 1644.422291,
+              "total_ops": 100000,
+              "total_errors": 0,
+              "op_latencies": {
+                "READ": {
+                  "count": 49959,
+                  "errors": 0,
+                  "min_us": 0.583,
+                  "avg_us": 1.761,
+                  "p50_us": 1.292,
+                  "p90_us": 2.833,
+                  "p95_us": 3.208,
+                  "p99_us": 5.667,
+                  "p999_us": 37.916,
+                  "max_us": 122.375
+                },
+                "UPDATE": {
+                  "count": 50041,
+                  "errors": 0,
+                  "min_us": 20,
+                  "avg_us": 260.177,
+                  "p50_us": 27.25,
+                  "p90_us": 1061.25,
+                  "p95_us": 1072.625,
+                  "p99_us": 1139.875,
+                  "p999_us": 1250.375,
+                  "max_us": 149015.292
+                }
+              }
+            },
+            "modified": {
+              "engine": "modified",
+              "qps": 310505.9289834065,
+              "elapsed_ms": 322.055042,
+              "total_ops": 100000,
+              "total_errors": 20208,
+              "op_latencies": {
+                "READ": {
+                  "count": 49999,
+                  "errors": 20208,
+                  "min_us": 0.25,
+                  "avg_us": 2.712,
+                  "p50_us": 1.125,
+                  "p90_us": 6.792,
+                  "p95_us": 11.167,
+                  "p99_us": 22.625,
+                  "p999_us": 43.583,
+                  "max_us": 124.875
+                },
+                "UPDATE": {
+                  "count": 50001,
+                  "errors": 0,
+                  "min_us": 2.333,
+                  "avg_us": 47.388,
+                  "p50_us": 25.292,
+                  "p90_us": 43.125,
+                  "p95_us": 51.625,
+                  "p99_us": 1133.875,
+                  "p999_us": 3573.041,
+                  "max_us": 6421.708
+                }
+              }
+            },
+            "original": {
+              "engine": "original",
+              "qps": 200643.49700170496,
+              "elapsed_ms": 498.396417,
+              "total_ops": 100000,
+              "total_errors": 20089,
+              "op_latencies": {
+                "READ": {
+                  "count": 49787,
+                  "errors": 20089,
+                  "min_us": 0.333,
+                  "avg_us": 3.16,
+                  "p50_us": 1.417,
+                  "p90_us": 7.834,
+                  "p95_us": 12.334,
+                  "p99_us": 24.916,
+                  "p999_us": 46.75,
+                  "max_us": 167.417
+                },
+                "UPDATE": {
+                  "count": 50213,
+                  "errors": 0,
+                  "min_us": 2.417,
+                  "avg_us": 74.786,
+                  "p50_us": 27.791,
+                  "p90_us": 49.125,
+                  "p95_us": 63.25,
+                  "p99_us": 1170.25,
+                  "p999_us": 3796.584,
+                  "max_us": 7897.291
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "workloads": [
+    {
+      "workload": "A",
+      "description": "50% Read, 50% Update (Session store)",
+      "distribution": "zipfian",
+      "records": 1000000,
+      "operations": 100000,
+      "threads": 8,
+      "engines": {
+        "bbolt": {
+          "engine": "bbolt",
+          "qps": 60811.63004618988,
+          "elapsed_ms": 1644.422291,
+          "total_ops": 100000,
+          "total_errors": 0,
+          "op_latencies": {
+            "READ": {
+              "count": 49959,
+              "errors": 0,
+              "min_us": 0.583,
+              "avg_us": 1.761,
+              "p50_us": 1.292,
+              "p90_us": 2.833,
+              "p95_us": 3.208,
+              "p99_us": 5.667,
+              "p999_us": 37.916,
+              "max_us": 122.375
+            },
+            "UPDATE": {
+              "count": 50041,
+              "errors": 0,
+              "min_us": 20,
+              "avg_us": 260.177,
+              "p50_us": 27.25,
+              "p90_us": 1061.25,
+              "p95_us": 1072.625,
+              "p99_us": 1139.875,
+              "p999_us": 1250.375,
+              "max_us": 149015.292
+            }
+          }
+        },
+        "modified": {
+          "engine": "modified",
+          "qps": 310505.9289834065,
+          "elapsed_ms": 322.055042,
+          "total_ops": 100000,
+          "total_errors": 0,
+          "op_latencies": {
+            "READ": {
+              "count": 49999,
+              "errors": 20208,
+              "min_us": 0.25,
+              "avg_us": 2.712,
+              "p50_us": 1.125,
+              "p90_us": 6.792,
+              "p95_us": 11.167,
+              "p99_us": 22.625,
+              "p999_us": 43.583,
+              "max_us": 124.875
+            },
+            "UPDATE": {
+              "count": 50001,
+              "errors": 0,
+              "min_us": 2.333,
+              "avg_us": 47.388,
+              "p50_us": 25.292,
+              "p90_us": 43.125,
+              "p95_us": 51.625,
+              "p99_us": 1133.875,
+              "p999_us": 3573.041,
+              "max_us": 6421.708
+            }
+          }
+        },
+        "original": {
+          "engine": "original",
+          "qps": 200643.49700170496,
+          "elapsed_ms": 498.396417,
+          "total_ops": 100000,
+          "total_errors": 0,
+          "op_latencies": {
+            "READ": {
+              "count": 49787,
+              "errors": 20089,
+              "min_us": 0.333,
+              "avg_us": 3.16,
+              "p50_us": 1.417,
+              "p90_us": 7.834,
+              "p95_us": 12.334,
+              "p99_us": 24.916,
+              "p999_us": 46.75,
+              "max_us": 167.417
+            },
+            "UPDATE": {
+              "count": 50213,
+              "errors": 0,
+              "min_us": 2.417,
+              "avg_us": 74.786,
+              "p50_us": 27.791,
+              "p90_us": 49.125,
+              "p95_us": 63.25,
+              "p99_us": 1170.25,
+              "p999_us": 3796.584,
+              "max_us": 7897.291
+            }
+          }
+        }
+      }
+    }
+  ]
+}
